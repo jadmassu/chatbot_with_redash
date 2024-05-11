@@ -23,15 +23,16 @@ def run() -> None:
 
 @app.post("/getQuery")
 async def userInput():
-    message = await request.get_json()
-    print("mesaf",message.get("query"))
+    userInput = await request.get_json()
+    message =userInput.get("query")
+    print("mesaf",message)
     prompt = ChatPromptTemplate.from_messages([
         ("system", "You are an SQL query generator. you can produce SQL queries without prior knowledge of specific table information. You will generate SQL queries based on each input provided to you, identifying words that could be a name of a table. If necessary information is missing or insufficient to generate a valid SQL query, you will return None."),
         ("user", "{input}")
     ])
     output_parser = StrOutputParser()
     chain = prompt | llm  | output_parser
-    return chain.invoke({"input": "select all users and order them "})
+    return chain.invoke({"input": message})
 
 @app.post("/echo")
 async def echo():
