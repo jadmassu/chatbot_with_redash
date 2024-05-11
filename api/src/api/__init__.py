@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import PromptTemplate
 rpath = os.path.abspath('../../../../backend')
 
 if rpath not in sys.path:
@@ -29,7 +30,7 @@ async def userInput():
 ])
    output_parser = StrOutputParser()
    chain = prompt | llm  | output_parser
-   return chain.invoke({"input": "select all the users"})
+   return chain.invoke({"input": "give me all users based on all city"})
 
 
 
