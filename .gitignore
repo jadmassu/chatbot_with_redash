@@ -1,6 +1,10 @@
-backend/.env
+
+#backend
+.env
+__pycache__/
 
 
+#readash 
 redash/.venv
 redash/venv/
 redash/.cache
