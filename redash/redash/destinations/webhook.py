@@ -39,7 +39,11 @@ class Webhook(BaseDestination):
             data["alert"]["title"] = alert.custom_subject
 
             headers = {"Content-Type": "application/json"}
-            auth = HTTPBasicAuth(options.get("username"), options.get("password")) if options.get("username") else None
+            auth = (
+                HTTPBasicAuth(options.get("username"), options.get("password"))
+                if options.get("username")
+                else None
+            )
             resp = requests.post(
                 options.get("url"),
                 data=json_dumps(data),
@@ -48,7 +52,11 @@ class Webhook(BaseDestination):
                 timeout=5.0,
             )
             if resp.status_code != 200:
-                logging.error("webhook send ERROR. status_code => {status}".format(status=resp.status_code))
+                logging.error(
+                    "webhook send ERROR. status_code => {status}".format(
+                        status=resp.status_code
+                    )
+                )
         except Exception:
             logging.exception("webhook send ERROR.")
 

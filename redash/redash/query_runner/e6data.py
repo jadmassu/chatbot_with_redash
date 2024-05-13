@@ -95,7 +95,9 @@ class e6data(BaseQueryRunner):
     def run_query(self, query, user):
         cursor = None
         try:
-            cursor = self.connection.cursor(catalog_name=self.configuration.get("catalog"))
+            cursor = self.connection.cursor(
+                catalog_name=self.configuration.get("catalog")
+            )
             cursor.execute(query)
             results = cursor.fetchall()
             description = cursor.description
@@ -126,7 +128,9 @@ class e6data(BaseQueryRunner):
             raise Exception(error)
 
     def get_schema(self, get_stats=False):
-        tables = self.connection.get_tables(self.configuration.get("catalog"), self.configuration.get("database"))
+        tables = self.connection.get_tables(
+            self.configuration.get("catalog"), self.configuration.get("database")
+        )
 
         schema = list()
 
@@ -140,7 +144,9 @@ class e6data(BaseQueryRunner):
 
             for column in columns:
                 redash_type = E6DATA_TYPES_MAPPING.get(column["fieldType"], None)
-                columns_with_type.append({"name": column["fieldName"], "type": redash_type})
+                columns_with_type.append(
+                    {"name": column["fieldName"], "type": redash_type}
+                )
 
             table_schema = {"name": table_name, "columns": columns_with_type}
 

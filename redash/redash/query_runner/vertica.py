@@ -114,7 +114,9 @@ class Vertica(BaseSQLQueryRunner):
             }
 
             if self.configuration.get("connection_timeout"):
-                conn_info["connection_timeout"] = self.configuration.get("connection_timeout")
+                conn_info["connection_timeout"] = self.configuration.get(
+                    "connection_timeout"
+                )
 
             connection = vertica_python.connect(**conn_info)
             cursor = connection.cursor()
@@ -122,10 +124,15 @@ class Vertica(BaseSQLQueryRunner):
             cursor.execute(query)
 
             if cursor.description is not None:
-                columns_data = [(i[0], types_map.get(i[1], None)) for i in cursor.description]
+                columns_data = [
+                    (i[0], types_map.get(i[1], None)) for i in cursor.description
+                ]
 
                 columns = self.fetch_columns(columns_data)
-                rows = [dict(zip(([c["name"] for c in columns]), r)) for r in cursor.fetchall()]
+                rows = [
+                    dict(zip(([c["name"] for c in columns]), r))
+                    for r in cursor.fetchall()
+                ]
 
                 data = {"columns": columns, "rows": rows}
                 error = None

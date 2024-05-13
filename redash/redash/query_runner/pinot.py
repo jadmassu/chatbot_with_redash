@@ -52,7 +52,14 @@ class Pinot(BaseQueryRunner):
                 "username": {"type": "string"},
                 "password": {"type": "string"},
             },
-            "order": ["brokerScheme", "brokerHost", "brokerPort", "controllerURI", "username", "password"],
+            "order": [
+                "brokerScheme",
+                "brokerHost",
+                "brokerPort",
+                "controllerURI",
+                "username",
+                "password",
+            ],
             "required": ["brokerHost", "controllerURI"],
             "secret": ["password"],
         }
@@ -85,9 +92,14 @@ class Pinot(BaseQueryRunner):
             cursor.execute(query)
             logger.debug("cursor.schema = %s", cursor.schema)
             columns = self.fetch_columns(
-                [(i["name"], PINOT_TYPES_MAPPING.get(i["type"], None)) for i in cursor.schema]
+                [
+                    (i["name"], PINOT_TYPES_MAPPING.get(i["type"], None))
+                    for i in cursor.schema
+                ]
             )
-            rows = [dict(zip((column["name"] for column in columns), row)) for row in cursor]
+            rows = [
+                dict(zip((column["name"] for column in columns), row)) for row in cursor
+            ]
 
             data = {"columns": columns, "rows": rows}
             error = None
@@ -103,7 +115,10 @@ class Pinot(BaseQueryRunner):
             for table_name in self.get_table_names():
                 schema_table_name = "{}.{}".format(schema_name, table_name)
                 if table_name not in schema:
-                    schema[schema_table_name] = {"name": schema_table_name, "columns": []}
+                    schema[schema_table_name] = {
+                        "name": schema_table_name,
+                        "columns": [],
+                    }
                 table_schema = self.get_pinot_table_schema(table_name)
 
                 for column in (
@@ -122,14 +137,20 @@ class Pinot(BaseQueryRunner):
         return ["default"]
 
     def get_pinot_table_schema(self, pinot_table_name):
-        return self.get_metadata_from_controller("/tables/" + pinot_table_name + "/schema")
+        return self.get_metadata_from_controller(
+            "/tables/" + pinot_table_name + "/schema"
+        )
 
     def get_table_names(self):
         return self.get_metadata_from_controller("/tables")["tables"]
 
     def get_metadata_from_controller(self, path):
         url = self.controller_uri + path
-        r = requests.get(url, headers={"Accept": "application/json"}, auth=HTTPBasicAuth(self.username, self.password))
+        r = requests.get(
+            url,
+            headers={"Accept": "application/json"},
+            auth=HTTPBasicAuth(self.username, self.password),
+        )
         try:
             result = r.json()
             logger.debug("get_metadata_from_controller from path %s", path)

@@ -45,12 +45,36 @@ class Ignite(BaseSQLQueryRunner):
                 "user": {"type": "string"},
                 "password": {"type": "string"},
                 "server": {"type": "string", "default": "127.0.0.1:10800"},
-                "tls": {"type": "boolean", "default": False, "title": "Use SSL/TLS connection"},
-                "schema": {"type": "string", "title": "Schema Name", "default": "PUBLIC"},
-                "distributed_joins": {"type": "boolean", "title": "Allow distributed joins", "default": False},
-                "enforce_join_order": {"type": "boolean", "title": "Enforce join order", "default": False},
-                "lazy": {"type": "boolean", "title": "Lazy query execution", "default": True},
-                "gridgain": {"type": "boolean", "title": "Use GridGain libraries", "default": gridgain_available},
+                "tls": {
+                    "type": "boolean",
+                    "default": False,
+                    "title": "Use SSL/TLS connection",
+                },
+                "schema": {
+                    "type": "string",
+                    "title": "Schema Name",
+                    "default": "PUBLIC",
+                },
+                "distributed_joins": {
+                    "type": "boolean",
+                    "title": "Allow distributed joins",
+                    "default": False,
+                },
+                "enforce_join_order": {
+                    "type": "boolean",
+                    "title": "Enforce join order",
+                    "default": False,
+                },
+                "lazy": {
+                    "type": "boolean",
+                    "title": "Lazy query execution",
+                    "default": True,
+                },
+                "gridgain": {
+                    "type": "boolean",
+                    "title": "Use GridGain libraries",
+                    "default": gridgain_available,
+                },
             },
             "required": ["server"],
             "secret": ["password"],
@@ -93,13 +117,20 @@ class Ignite(BaseSQLQueryRunner):
             if row["TYPE"] in types_map:
                 col_type = types_map[row["TYPE"]]
 
-            schema[table_name]["columns"].append({"name": row["COLUMN_NAME"], "type": col_type})
+            schema[table_name]["columns"].append(
+                {"name": row["COLUMN_NAME"], "type": col_type}
+            )
 
         return list(schema.values())
 
     def normalise_column(self, col):
         # if it's a datetime, just return the milliseconds
-        if type(col) is tuple and len(col) == 2 and type(col[0]) is datetime.datetime and isinstance(col[1], int):
+        if (
+            type(col) is tuple
+            and len(col) == 2
+            and type(col[0]) is datetime.datetime
+            and isinstance(col[1], int)
+        ):
             return col[0]
         else:
             return col
@@ -146,7 +177,9 @@ class Ignite(BaseSQLQueryRunner):
                 from pyignite import Client
 
             connection = Client(username=user, password=password, use_ssl=tls)
-            connection.connect([self.server_to_connection(s) for s in server.split(",")])
+            connection.connect(
+                [self.server_to_connection(s) for s in server.split(",")]
+            )
 
             cursor = connection.sql(
                 query,

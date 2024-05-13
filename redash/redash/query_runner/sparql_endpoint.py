@@ -124,7 +124,9 @@ class SPARQLEndpointQueryRunner(BaseQueryRunner):
         query = SparqlQuery(query_text)
         query_type = query.get_query_type()
         if query_type not in ["SELECT", None]:
-            raise ValueError("Queries of type {} can not be processed by redash.".format(query_type))
+            raise ValueError(
+                "Queries of type {} can not be processed by redash.".format(query_type)
+            )
 
         self._setup_environment()
         try:

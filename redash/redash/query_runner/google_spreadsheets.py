@@ -52,7 +52,9 @@ def _get_columns_and_column_names(row):
             duplicate_counter += 1
 
         column_names.append(column_name)
-        columns.append({"name": column_name, "friendly_name": column_name, "type": TYPE_STRING})
+        columns.append(
+            {"name": column_name, "friendly_name": column_name, "type": TYPE_STRING}
+        )
 
     return columns, column_names
 
@@ -126,7 +128,10 @@ def parse_worksheet(worksheet):
             columns[j]["type"] = guess_type(value)
 
     column_types = [c["type"] for c in columns]
-    rows = [dict(zip(column_names, _value_eval_list(row, column_types))) for row in worksheet[HEADER_INDEX + 1 :]]
+    rows = [
+        dict(zip(column_names, _value_eval_list(row, column_types)))
+        for row in worksheet[HEADER_INDEX + 1 :]
+    ]
     data = {"columns": columns, "rows": rows}
 
     return data
@@ -210,7 +215,12 @@ class GoogleSpreadsheet(BaseQueryRunner):
     def configuration_schema(cls):
         return {
             "type": "object",
-            "properties": {"jsonKeyFile": {"type": "string", "title": "JSON Key File (ADC is used if omitted)"}},
+            "properties": {
+                "jsonKeyFile": {
+                    "type": "string",
+                    "title": "JSON Key File (ADC is used if omitted)",
+                }
+            },
             "required": [],
             "secret": ["jsonKeyFile"],
         }
@@ -255,13 +265,17 @@ class GoogleSpreadsheet(BaseQueryRunner):
             else:
                 spreadsheet = spreadsheet_service.open_by_key(key)
 
-            data = parse_spreadsheet(SpreadsheetWrapper(spreadsheet), worksheet_num_or_title)
+            data = parse_spreadsheet(
+                SpreadsheetWrapper(spreadsheet), worksheet_num_or_title
+            )
 
             return data, None
         except gspread.SpreadsheetNotFound:
             return (
                 None,
-                "Spreadsheet ({}) not found. Make sure you used correct id.".format(key),
+                "Spreadsheet ({}) not found. Make sure you used correct id.".format(
+                    key
+                ),
             )
         except APIError as e:
             return None, parse_api_error(e)

@@ -53,10 +53,16 @@ class WorkerHealthcheck(base.BaseCheck):
     def __call__(self, process_spec):
         pid = process_spec["pid"]
         all_workers = Worker.all(connection=rq_redis_connection)
-        workers = [w for w in all_workers if w.hostname == socket.gethostname() and w.pid == pid]
+        workers = [
+            w
+            for w in all_workers
+            if w.hostname == socket.gethostname() and w.pid == pid
+        ]
 
         if not workers:
-            self._log(f"Cannot find worker for hostname {socket.gethostname()} and pid {pid}. ==> Is healthy? False")
+            self._log(
+                f"Cannot find worker for hostname {socket.gethostname()} and pid {pid}. ==> Is healthy? False"
+            )
             return False
 
         worker = workers.pop()
@@ -90,4 +96,6 @@ class WorkerHealthcheck(base.BaseCheck):
 
 @manager.command()
 def healthcheck():
-    return check_runner.CheckRunner("worker_healthcheck", "worker", None, [(WorkerHealthcheck, {})]).run()
+    return check_runner.CheckRunner(
+        "worker_healthcheck", "worker", None, [(WorkerHealthcheck, {})]
+    ).run()

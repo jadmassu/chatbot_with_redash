@@ -98,10 +98,16 @@ class Webex(BaseDestination):
             subject = f"{alert.name} went back to normal"
 
         attachments = self.formatted_attachments_template(
-            subject=subject, description=alert.custom_body, query_link=query_link, alert_link=alert_link
+            subject=subject,
+            description=alert.custom_body,
+            query_link=query_link,
+            alert_link=alert_link,
         )
 
-        template_payload = {"markdown": subject + "\n" + alert.custom_body, "attachments": attachments}
+        template_payload = {
+            "markdown": subject + "\n" + alert.custom_body,
+            "attachments": attachments,
+        }
 
         headers = {"Authorization": f"Bearer {options['webex_bot_token']}"}
 
@@ -130,7 +136,11 @@ class Webex(BaseDestination):
             )
             logging.warning(resp.text)
             if resp.status_code != 200:
-                logging.error("Webex send ERROR. status_code => {status}".format(status=resp.status_code))
+                logging.error(
+                    "Webex send ERROR. status_code => {status}".format(
+                        status=resp.status_code
+                    )
+                )
         except Exception as e:
             logging.exception(f"Webex send ERROR: {e}")
 

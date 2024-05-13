@@ -58,7 +58,9 @@ def _get_type(value):
 
 def add_column(columns, column_name, column_type):
     if _get_column_by_name(columns, column_name) is None:
-        columns.append({"name": column_name, "friendly_name": column_name, "type": column_type})
+        columns.append(
+            {"name": column_name, "friendly_name": column_name, "type": column_type}
+        )
 
 
 def _apply_path_search(response, path, default=None):
@@ -167,26 +169,35 @@ class JSON(BaseHTTPQueryRunner):
 
     def _run_json_query(self, query):
         if not isinstance(query, dict):
-            raise QueryParseError("Query should be a YAML object describing the URL to query.")
+            raise QueryParseError(
+                "Query should be a YAML object describing the URL to query."
+            )
 
         if "url" not in query:
             raise QueryParseError("Query must include 'url' option.")
 
         method = query.get("method", "get")
-        request_options = project(query, ("params", "headers", "data", "auth", "json", "verify"))
+        request_options = project(
+            query, ("params", "headers", "data", "auth", "json", "verify")
+        )
 
         fields = query.get("fields")
         path = query.get("path")
 
         if "pagination" in query:
-            pagination = RequestPagination.from_config(self.configuration, query["pagination"])
+            pagination = RequestPagination.from_config(
+                self.configuration, query["pagination"]
+            )
         else:
             pagination = None
 
         if isinstance(request_options.get("auth", None), list):
             request_options["auth"] = tuple(request_options["auth"])
         elif self.configuration.get("username") or self.configuration.get("password"):
-            request_options["auth"] = (self.configuration.get("username"), self.configuration.get("password"))
+            request_options["auth"] = (
+                self.configuration.get("username"),
+                self.configuration.get("password"),
+            )
 
         if method not in ("get", "post"):
             raise QueryParseError("Only GET or POST methods are allowed.")
@@ -194,7 +205,9 @@ class JSON(BaseHTTPQueryRunner):
         if fields and not isinstance(fields, list):
             raise QueryParseError("'fields' needs to be a list.")
 
-        results, error = self._get_all_results(query["url"], method, path, pagination, **request_options)
+        results, error = self._get_all_results(
+            query["url"], method, path, pagination, **request_options
+        )
         return parse_json(results, fields), error
 
     def _get_all_results(self, url, method, result_path, pagination, **request_options):
@@ -212,7 +225,9 @@ class JSON(BaseHTTPQueryRunner):
             if result:
                 results.extend(result)
                 if pagination:
-                    has_more, url, request_options = pagination.next(url, request_options, response)
+                    has_more, url, request_options = pagination.next(
+                        url, request_options, response
+                    )
 
         return results, error
 
@@ -233,8 +248,12 @@ class RequestPagination:
 
     @staticmethod
     def from_config(configuration, pagination):
-        if not isinstance(pagination, dict) or not isinstance(pagination.get("type"), str):
-            raise QueryParseError("'pagination' should be an object with a `type` property")
+        if not isinstance(pagination, dict) or not isinstance(
+            pagination.get("type"), str
+        ):
+            raise QueryParseError(
+                "'pagination' should be an object with a `type` property"
+            )
 
         if pagination["type"] == "url":
             return UrlPagination(pagination)
@@ -263,7 +282,9 @@ class TokenPagination(RequestPagination):
     def __init__(self, pagination):
         self.fields = pagination.get("fields", ["next_page_token", "page_token"])
         if not isinstance(self.fields, list) or len(self.fields) != 2:
-            raise QueryParseError("'pagination.fields' should be a list of 2 field names")
+            raise QueryParseError(
+                "'pagination.fields' should be a list of 2 field names"
+            )
 
     def next(self, url, request_options, response):
         next_token = _apply_path_search(response, self.fields[0], "")
@@ -274,7 +295,9 @@ class TokenPagination(RequestPagination):
 
         # prevent infinite loop that can happen if self.fields[1] is wrong
         if next_token == params.get(self.fields[1]):
-            raise Exception("{} did not change; possible misconfiguration".format(self.fields[0]))
+            raise Exception(
+                "{} did not change; possible misconfiguration".format(self.fields[0])
+            )
 
         params[self.fields[1]] = next_token
         request_options["params"] = params

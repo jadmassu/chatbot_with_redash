@@ -24,7 +24,9 @@ from redash.utils.pandas import pandas_installed
 
 DummyRequest = namedtuple("DummyRequest", ["host", "scheme"])
 
-skip_condition = pytest.mark.skipif(not pandas_installed, reason="pandas is not installed")
+skip_condition = pytest.mark.skipif(
+    not pandas_installed, reason="pandas is not installed"
+)
 
 if pandas_installed:
     import numpy as np
@@ -116,7 +118,10 @@ class TestRenderTemplate(TestCase):
                     }
                 ]
             }
-            html, text = [render_template("emails/failures.{}".format(f), d) for f in ["html", "txt"]]
+            html, text = [
+                render_template("emails/failures.{}".format(f), d)
+                for f in ["html", "txt"]
+            ]
             self.assertIn("Failure Unit Test", html)
             self.assertIn("Failure Unit Test", text)
 
@@ -130,7 +135,10 @@ def mock_dataframe():
             "integer_col": [1, 2],
             "float_col": [1.1, 2.2],
             "date_col": [np.datetime64("2020-01-01"), np.datetime64("2020-05-05")],
-            "datetime_col": [np.datetime64("2020-01-01 12:00:00"), np.datetime64("2020-05-05 14:30:00")],
+            "datetime_col": [
+                np.datetime64("2020-01-01 12:00:00"),
+                np.datetime64("2020-05-05 14:30:00"),
+            ],
             "string_col": ["A", "B"],
         }
     )
@@ -145,7 +153,11 @@ def test_get_column_types_from_dataframe(mock_dataframe):
         {"name": "integer_col", "friendly_name": "integer_col", "type": TYPE_INTEGER},
         {"name": "float_col", "friendly_name": "float_col", "type": TYPE_FLOAT},
         {"name": "date_col", "friendly_name": "date_col", "type": TYPE_DATE},
-        {"name": "datetime_col", "friendly_name": "datetime_col", "type": TYPE_DATETIME},
+        {
+            "name": "datetime_col",
+            "friendly_name": "datetime_col",
+            "type": TYPE_DATETIME,
+        },
         {"name": "string_col", "friendly_name": "string_col", "type": TYPE_STRING},
     ]
 

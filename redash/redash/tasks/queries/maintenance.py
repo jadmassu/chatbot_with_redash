@@ -77,7 +77,9 @@ class RefreshQueriesError(Exception):
 
 def _apply_auto_limit(query_text, query):
     should_apply_auto_limit = query.options.get("apply_auto_limit", False)
-    return query.data_source.query_runner.apply_auto_limit(query_text, should_apply_auto_limit)
+    return query.data_source.query_runner.apply_auto_limit(
+        query_text, should_apply_auto_limit
+    )
 
 
 def refresh_queries():
@@ -96,7 +98,10 @@ def refresh_queries():
                 query.data_source,
                 query.user_id,
                 scheduled_query=query,
-                metadata={"query_id": query.id, "Username": query.user.get_actual_user()},
+                metadata={
+                    "query_id": query.id,
+                    "Username": query.user.get_actual_user(),
+                },
             )
             enqueued.append(query)
         except Exception as e:
@@ -131,9 +136,13 @@ def cleanup_query_results():
         settings.QUERY_RESULTS_CLEANUP_MAX_AGE,
     )
 
-    unused_query_results = models.QueryResult.unused(settings.QUERY_RESULTS_CLEANUP_MAX_AGE)
+    unused_query_results = models.QueryResult.unused(
+        settings.QUERY_RESULTS_CLEANUP_MAX_AGE
+    )
     deleted_count = models.QueryResult.query.filter(
-        models.QueryResult.id.in_(unused_query_results.limit(settings.QUERY_RESULTS_CLEANUP_COUNT).subquery())
+        models.QueryResult.id.in_(
+            unused_query_results.limit(settings.QUERY_RESULTS_CLEANUP_COUNT).subquery()
+        )
     ).delete(synchronize_session=False)
     models.db.session.commit()
     logger.info("Deleted %d unused query results.", deleted_count)
@@ -178,7 +187,9 @@ def refresh_schema(data_source_id):
         )
         statsd_client.incr("refresh_schema.timeout")
     except Exception:
-        logger.warning("Failed refreshing schema for the data source: %s", ds.name, exc_info=1)
+        logger.warning(
+            "Failed refreshing schema for the data source: %s", ds.name, exc_info=1
+        )
         statsd_client.incr("refresh_schema.error")
         logger.info(
             "task=refresh_schema state=failed ds_id=%s runtime=%.2f",
@@ -191,7 +202,11 @@ def refresh_schemas():
     """
     Refreshes the data sources schemas.
     """
-    blacklist = [int(ds_id) for ds_id in redis_connection.smembers("data_sources:schema:blacklist") if ds_id]
+    blacklist = [
+        int(ds_id)
+        for ds_id in redis_connection.smembers("data_sources:schema:blacklist")
+        if ds_id
+    ]
     global_start_time = time.time()
 
     logger.info("task=refresh_schemas state=start")
@@ -204,9 +219,13 @@ def refresh_schemas():
                 ds.pause_reason,
             )
         elif ds.id in blacklist:
-            logger.info("task=refresh_schema state=skip ds_id=%s reason=blacklist", ds.id)
+            logger.info(
+                "task=refresh_schema state=skip ds_id=%s reason=blacklist", ds.id
+            )
         elif ds.org.is_disabled:
-            logger.info("task=refresh_schema state=skip ds_id=%s reason=org_disabled", ds.id)
+            logger.info(
+                "task=refresh_schema state=skip ds_id=%s reason=org_disabled", ds.id
+            )
         else:
             refresh_schema.delay(ds.id)
 

@@ -81,9 +81,9 @@ class ElasticSearch2(BaseHTTPQueryRunner):
                     property_type = property_data.get("type", None)
                     nested_properties = property_data.get("properties", None)
                     if property_type:
-                        mappings[index_name][prefix + property_name] = ELASTICSEARCH_TYPES_MAPPING.get(
-                            property_type, TYPE_STRING
-                        )
+                        mappings[index_name][
+                            prefix + property_name
+                        ] = ELASTICSEARCH_TYPES_MAPPING.get(property_type, TYPE_STRING)
                     elif nested_properties:
                         new_prefix = prefix + property_name + "."
                         _parse_properties(new_prefix, nested_properties)
@@ -179,7 +179,9 @@ class ElasticSearch2(BaseHTTPQueryRunner):
                     rows.append(row)
                 else:
                     depth += 1
-                    parse_buckets_list(rows, sub_agg_key, value[sub_agg_key]["buckets"], row, depth)
+                    parse_buckets_list(
+                        rows, sub_agg_key, value[sub_agg_key]["buckets"], row, depth
+                    )
 
         def collect_aggregations(rows, parent_key, data, row, depth):
             row = get_row(rows, row)
@@ -225,7 +227,9 @@ class ElasticSearch2(BaseHTTPQueryRunner):
                     if result_fields and column not in result_fields_index:
                         continue
 
-                    unested_results = get_flatten_results({column: h[fields_parameter_name][column]})
+                    unested_results = get_flatten_results(
+                        {column: h[fields_parameter_name][column]}
+                    )
 
                     for column_name, value in unested_results.items():
                         add_column_if_needed(column_name, value=value)
@@ -233,7 +237,9 @@ class ElasticSearch2(BaseHTTPQueryRunner):
 
                 result_rows.append(row)
         else:
-            raise Exception("Redash failed to parse the results it got from Elasticsearch.")
+            raise Exception(
+                "Redash failed to parse the results it got from Elasticsearch."
+            )
 
         return {"columns": result_columns, "rows": result_rows}
 

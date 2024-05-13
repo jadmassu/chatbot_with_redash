@@ -44,7 +44,11 @@ class Arango(BaseQueryRunner):
                 "host": {"type": "string", "default": "127.0.0.1"},
                 "port": {"type": "number", "default": 8529},
                 "dbname": {"type": "string", "title": "Database Name"},
-                "timeout": {"type": "number", "default": 0.0, "title": "AQL Timeout in seconds (0 = no timeout)"},
+                "timeout": {
+                    "type": "number",
+                    "default": 0.0,
+                    "title": "AQL Timeout in seconds (0 = no timeout)",
+                },
             },
             "order": ["host", "port", "user", "password", "dbname"],
             "required": ["host", "user", "password", "dbname"],
@@ -65,13 +69,21 @@ class Arango(BaseQueryRunner):
         return "arangodb"
 
     def run_query(self, query, user):
-        client = ArangoClient(hosts="{}:{}".format(self.configuration["host"], self.configuration.get("port", 8529)))
+        client = ArangoClient(
+            hosts="{}:{}".format(
+                self.configuration["host"], self.configuration.get("port", 8529)
+            )
+        )
         db = client.db(
-            self.configuration["dbname"], username=self.configuration["user"], password=self.configuration["password"]
+            self.configuration["dbname"],
+            username=self.configuration["user"],
+            password=self.configuration["password"],
         )
 
         try:
-            cursor = db.aql.execute(query, max_runtime=self.configuration.get("timeout", 0.0))
+            cursor = db.aql.execute(
+                query, max_runtime=self.configuration.get("timeout", 0.0)
+            )
             result = [i for i in cursor]
             column_tuples = [(i, TYPE_STRING) for i in result[0].keys()]
             columns = self.fetch_columns(column_tuples)

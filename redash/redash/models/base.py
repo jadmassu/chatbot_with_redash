@@ -88,7 +88,11 @@ class GFKBase:
             return self._object
         else:
             object_class = _gfk_types[self.object_type]
-            self._object = session.query(object_class).filter(object_class.id == self.object_id).first()
+            self._object = (
+                session.query(object_class)
+                .filter(object_class.id == self.object_id)
+                .first()
+            )
             return self._object
 
     @object.setter

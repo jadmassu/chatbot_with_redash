@@ -113,16 +113,23 @@ class Presto(BaseQueryRunner):
 
         try:
             cursor.execute(query)
-            column_tuples = [(i[0], PRESTO_TYPES_MAPPING.get(i[1], None)) for i in cursor.description]
+            column_tuples = [
+                (i[0], PRESTO_TYPES_MAPPING.get(i[1], None)) for i in cursor.description
+            ]
             columns = self.fetch_columns(column_tuples)
-            rows = [dict(zip(([column["name"] for column in columns]), r)) for i, r in enumerate(cursor.fetchall())]
+            rows = [
+                dict(zip(([column["name"] for column in columns]), r))
+                for i, r in enumerate(cursor.fetchall())
+            ]
             data = {"columns": columns, "rows": rows}
             error = None
         except DatabaseError as db:
             data = None
             default_message = "Unspecified DatabaseError: {0}".format(str(db))
             if isinstance(db.args[0], dict):
-                message = db.args[0].get("failureInfo", {"message", None}).get("message")
+                message = (
+                    db.args[0].get("failureInfo", {"message", None}).get("message")
+                )
             else:
                 message = None
             error = default_message if message is None else message

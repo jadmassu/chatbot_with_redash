@@ -48,7 +48,9 @@ class CustomPrint:
     def write(self, text):
         if self.enabled:
             if text and text.strip():
-                log_line = "[{0}] {1}".format(datetime.datetime.utcnow().isoformat(), text)
+                log_line = "[{0}] {1}".format(
+                    datetime.datetime.utcnow().isoformat(), text
+                )
                 self.lines.append(log_line)
 
     def enable(self):
@@ -148,7 +150,9 @@ class Python(BaseQueryRunner):
 
             return m
 
-        raise Exception("'{0}' is not configured as a supported import module".format(name))
+        raise Exception(
+            "'{0}' is not configured as a supported import module".format(name)
+        )
 
     @staticmethod
     def custom_write(obj):
@@ -190,7 +194,9 @@ class Python(BaseQueryRunner):
         if "columns" not in result:
             result["columns"] = []
 
-        result["columns"].append({"name": column_name, "friendly_name": friendly_name, "type": column_type})
+        result["columns"].append(
+            {"name": column_name, "friendly_name": friendly_name, "type": column_type}
+        )
 
     @staticmethod
     def add_result_row(result, values):
@@ -276,7 +282,9 @@ class Python(BaseQueryRunner):
 
         result["rows"] = converted_result["rows"]
         for column in converted_result["columns"]:
-            self.add_result_column(result, column["name"], column["friendly_name"], column["type"])
+            self.add_result_column(
+                result, column["name"], column["friendly_name"], column["type"]
+            )
 
     def get_current_user(self):
         return self._current_user.to_dict()

@@ -67,7 +67,9 @@ def parse_ga_response(response, dimensions):
                     d[column_name] = val
             else:
                 column_name = k
-                column_type = [col for col in columns if col["name"] == column_name][0]["type"]
+                column_type = [col for col in columns if col["name"] == column_name][0][
+                    "type"
+                ]
                 value = get_formatted_value(column_type, value)
                 d[column_name] = value
         rows.append(d)
@@ -111,7 +113,10 @@ class GoogleSearchConsole(BaseSQLQueryRunner):
             "type": "object",
             "properties": {
                 "siteURL": {"type": "string", "title": "Site URL"},
-                "jsonKeyFile": {"type": "string", "title": "JSON Key File (ADC is used if omitted)"},
+                "jsonKeyFile": {
+                    "type": "string",
+                    "title": "JSON Key File (ADC is used if omitted)",
+                },
             },
             "required": [],
             "secret": ["jsonKeyFile"],
@@ -148,7 +153,9 @@ class GoogleSearchConsole(BaseSQLQueryRunner):
 
         if len(params) > 0:
             try:
-                response = api.searchanalytics().query(siteUrl=site_url, body=params).execute()
+                response = (
+                    api.searchanalytics().query(siteUrl=site_url, body=params).execute()
+                )
                 data = parse_ga_response(response, params["dimensions"])
                 error = None
             except HttpError as e:

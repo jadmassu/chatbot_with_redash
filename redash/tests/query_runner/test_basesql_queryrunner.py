@@ -34,11 +34,15 @@ class TestBaseSQLQueryRunner(unittest.TestCase):
 
     def test_add_limit_query_no_limit(self):
         query = "SELECT *"
-        self.assertEqual("SELECT * LIMIT 1000", self.query_runner.add_limit_to_query(query))
+        self.assertEqual(
+            "SELECT * LIMIT 1000", self.query_runner.add_limit_to_query(query)
+        )
 
     def test_add_limit_query_with_punc(self):
         query = "SELECT *;"
-        self.assertEqual("SELECT * LIMIT 1000;", self.query_runner.add_limit_to_query(query))
+        self.assertEqual(
+            "SELECT * LIMIT 1000;", self.query_runner.add_limit_to_query(query)
+        )
 
     def test_apply_auto_limit_origin_no_limit_1(self):
         origin_query_text = "SELECT 2"
@@ -51,12 +55,16 @@ class TestBaseSQLQueryRunner(unittest.TestCase):
         self.assertEqual(origin_query_text, query_text)
 
     def test_apply_auto_limit_origin_have_limit_2(self):
-        origin_query_text = "SELECT * FROM fake WHERE id IN (SELECT id FROM fake_2 LIMIT 200) LIMIT 200"
+        origin_query_text = (
+            "SELECT * FROM fake WHERE id IN (SELECT id FROM fake_2 LIMIT 200) LIMIT 200"
+        )
         query_text = self.query_runner.apply_auto_limit(origin_query_text, True)
         self.assertEqual(origin_query_text, query_text)
 
     def test_apply_auto_limit_origin_no_limit_2(self):
-        origin_query_text = "SELECT * FROM fake WHERE id IN (SELECT id FROM fake_2 LIMIT 200)"
+        origin_query_text = (
+            "SELECT * FROM fake WHERE id IN (SELECT id FROM fake_2 LIMIT 200)"
+        )
         query_text = self.query_runner.apply_auto_limit(origin_query_text, True)
         self.assertEqual(origin_query_text + " LIMIT 1000", query_text)
 
@@ -94,10 +102,14 @@ class TestBaseSQLQueryRunner(unittest.TestCase):
     def test_apply_auto_limit_multi_query_end_with_punc(self):
         origin_query_text = "select * from table1;\n" "select * from table2"
         query_text = self.query_runner.apply_auto_limit(origin_query_text, True)
-        self.assertEqual("select * from table1;\nselect * from table2 LIMIT 1000", query_text)
+        self.assertEqual(
+            "select * from table1;\nselect * from table2 LIMIT 1000", query_text
+        )
 
     def test_apply_auto_limit_multi_query_last_not_select(self):
-        origin_query_text = "select * from table1;\n" "CREATE TABLE Persons (PersonID int)"
+        origin_query_text = (
+            "select * from table1;\n" "CREATE TABLE Persons (PersonID int)"
+        )
         query_text = self.query_runner.apply_auto_limit(origin_query_text, True)
         self.assertEqual(origin_query_text, query_text)
 
@@ -121,13 +133,17 @@ class TestBaseSQLQueryRunner(unittest.TestCase):
         expected_query_text = "select * LIMIT 1000"
         base_runner = BaseQueryRunner({})
         self.assertEqual(
-            base_runner.gen_query_hash(expected_query_text), self.query_runner.gen_query_hash(origin_query_text, True)
+            base_runner.gen_query_hash(expected_query_text),
+            self.query_runner.gen_query_hash(origin_query_text, True),
         )
 
     def test_gen_query_hash_NoneSQL(self):
         origin_query_text = "select *"
         base_runner = BaseQueryRunner({})
-        self.assertEqual(gen_query_hash(origin_query_text), base_runner.gen_query_hash(origin_query_text, True))
+        self.assertEqual(
+            gen_query_hash(origin_query_text),
+            base_runner.gen_query_hash(origin_query_text, True),
+        )
 
 
 if __name__ == "__main__":

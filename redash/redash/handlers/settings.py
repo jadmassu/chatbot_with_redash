@@ -45,7 +45,9 @@ class OrganizationSettings(BaseResource):
                 previous_values[k] = self.current_org.google_apps_domains
                 self.current_org.settings[Organization.SETTING_GOOGLE_APPS_DOMAINS] = v
             else:
-                previous_values[k] = self.current_org.get_setting(k, raise_on_missing=False)
+                previous_values[k] = self.current_org.get_setting(
+                    k, raise_on_missing=False
+                )
                 self.current_org.set_setting(k, v)
 
         db.session.add(self.current_org)

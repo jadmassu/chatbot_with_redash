@@ -36,7 +36,9 @@ class TestApiKeyAuthentication(BaseTestCase):
         self.api_key = "10"
         self.query = self.factory.create_query(api_key=self.api_key)
         models.db.session.flush()
-        self.query_url = "/{}/api/queries/{}".format(self.factory.org.slug, self.query.id)
+        self.query_url = "/{}/api/queries/{}".format(
+            self.factory.org.slug, self.query.id
+        )
         self.queries_url = "/{}/api/queries".format(self.factory.org.slug)
 
     def test_no_api_key(self):
@@ -76,7 +78,9 @@ class TestApiKeyAuthentication(BaseTestCase):
 
     def test_api_key_header(self):
         with self.app.test_client() as c:
-            c.get(self.query_url, headers={"Authorization": "Key {}".format(self.api_key)})
+            c.get(
+                self.query_url, headers={"Authorization": "Key {}".format(self.api_key)}
+            )
             self.assertIsNotNone(api_key_load_user_from_request(request))
 
     def test_api_key_header_with_wrong_key(self):
@@ -211,12 +215,16 @@ class TestVerifyProfile(BaseTestCase):
 
     def test_domain_not_in_org_domains_list(self):
         profile = dict(email="arik@example.com")
-        self.factory.org.settings[models.Organization.SETTING_GOOGLE_APPS_DOMAINS] = ["example.org"]
+        self.factory.org.settings[models.Organization.SETTING_GOOGLE_APPS_DOMAINS] = [
+            "example.org"
+        ]
         self.assertFalse(verify_profile(self.factory.org, profile))
 
     def test_domain_in_org_domains_list(self):
         profile = dict(email="arik@example.com")
-        self.factory.org.settings[models.Organization.SETTING_GOOGLE_APPS_DOMAINS] = ["example.com"]
+        self.factory.org.settings[models.Organization.SETTING_GOOGLE_APPS_DOMAINS] = [
+            "example.com"
+        ]
         self.assertTrue(verify_profile(self.factory.org, profile))
 
         self.factory.org.settings[models.Organization.SETTING_GOOGLE_APPS_DOMAINS] = [
@@ -234,17 +242,23 @@ class TestVerifyProfile(BaseTestCase):
     def test_user_not_in_domain_but_account_exists(self):
         profile = dict(email="arik@example.com")
         self.factory.create_user(email="arik@example.com")
-        self.factory.org.settings[models.Organization.SETTING_GOOGLE_APPS_DOMAINS] = ["example.org"]
+        self.factory.org.settings[models.Organization.SETTING_GOOGLE_APPS_DOMAINS] = [
+            "example.org"
+        ]
         self.assertTrue(verify_profile(self.factory.org, profile))
 
 
 class TestGetLoginUrl(BaseTestCase):
     def test_when_multi_org_enabled_and_org_exists(self):
         with self.app.test_request_context("/{}/".format(self.factory.org.slug)):
-            self.assertEqual(get_login_url(next=None), "/{}/login".format(self.factory.org.slug))
+            self.assertEqual(
+                get_login_url(next=None), "/{}/login".format(self.factory.org.slug)
+            )
 
     def test_when_multi_org_enabled_and_org_doesnt_exist(self):
-        with self.app.test_request_context("/{}_notexists/".format(self.factory.org.slug)):
+        with self.app.test_request_context(
+            "/{}_notexists/".format(self.factory.org.slug)
+        ):
             self.assertEqual(get_login_url(next=None), "/")
 
 
@@ -392,8 +406,12 @@ class TestUserForgotPassword(BaseTestCase):
     def test_user_should_receive_password_reset_link(self):
         user = self.factory.create_user()
 
-        with patch("redash.handlers.authentication.send_password_reset_email") as send_password_reset_email_mock:
-            response = self.post_request("/forgot", org=user.org, data={"email": user.email})
+        with patch(
+            "redash.handlers.authentication.send_password_reset_email"
+        ) as send_password_reset_email_mock:
+            response = self.post_request(
+                "/forgot", org=user.org, data={"email": user.email}
+            )
             self.assertEqual(response.status_code, 200)
             send_password_reset_email_mock.assert_called_with(user)
 
@@ -408,7 +426,9 @@ class TestUserForgotPassword(BaseTestCase):
         ) as send_password_reset_email_mock, patch(
             "redash.handlers.authentication.send_user_disabled_email"
         ) as send_user_disabled_email_mock:
-            response = self.post_request("/forgot", org=user.org, data={"email": user.email})
+            response = self.post_request(
+                "/forgot", org=user.org, data={"email": user.email}
+            )
             self.assertEqual(response.status_code, 200)
             send_password_reset_email_mock.assert_not_called()
             send_user_disabled_email_mock.assert_called_with(user)
@@ -424,13 +444,25 @@ class TestJWTAuthentication(BaseTestCase):
         self.rsa_public_key = "/tmp/jwtRS256.pem"
 
         if not os.path.exists(self.rsa_public_key):
-            subprocess.check_output(["openssl", "genrsa", "-out", self.rsa_private_key, "4096"])
             subprocess.check_output(
-                ["openssl", "rsa", "-pubout", "-in", self.rsa_private_key, "-out", self.rsa_public_key]
+                ["openssl", "genrsa", "-out", self.rsa_private_key, "4096"]
+            )
+            subprocess.check_output(
+                [
+                    "openssl",
+                    "rsa",
+                    "-pubout",
+                    "-in",
+                    self.rsa_private_key,
+                    "-out",
+                    self.rsa_public_key,
+                ]
             )
 
         org_settings["auth_jwt_login_enabled"] = True
-        org_settings["auth_jwt_auth_public_certs_url"] = "file://{}".format(self.rsa_public_key)
+        org_settings["auth_jwt_auth_public_certs_url"] = "file://{}".format(
+            self.rsa_public_key
+        )
         org_settings["auth_jwt_auth_issuer"] = self.auth_issuer
         org_settings["auth_jwt_auth_audience"] = self.auth_audience
         org_settings["auth_jwt_auth_header_name"] = self.token_name
@@ -463,7 +495,9 @@ class TestJWTAuthentication(BaseTestCase):
             sign_key = keyfile.read().strip()
         token_data = jwt.encode(data, sign_key, algorithm="RS256")
 
-        response = self.get_request("/data_sources", org=self.factory.org, headers={self.token_name: token_data})
+        response = self.get_request(
+            "/data_sources", org=self.factory.org, headers={self.token_name: token_data}
+        )
         self.assertEqual(response.status_code, 200)
 
     @patch.object(requests, "get")

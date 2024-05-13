@@ -50,7 +50,9 @@ def parse_response(data):
     types = {}
 
     for c in cols:
-        columns.append({"name": c, "type": guess_type(first_row[c]), "friendly_name": c})
+        columns.append(
+            {"name": c, "type": guess_type(first_row[c]), "friendly_name": c}
+        )
 
     for col in columns:
         types[col["name"]] = col["type"]

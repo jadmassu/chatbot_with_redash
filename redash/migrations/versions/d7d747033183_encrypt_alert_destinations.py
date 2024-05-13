@@ -18,8 +18,8 @@ from redash.models.types import EncryptedConfiguration
 
 
 # revision identifiers, used by Alembic.
-revision = 'd7d747033183'
-down_revision = 'e5c7a4e2df4d'
+revision = "d7d747033183"
+down_revision = "e5c7a4e2df4d"
 branch_labels = None
 depends_on = None
 
@@ -27,7 +27,7 @@ depends_on = None
 def upgrade():
     op.add_column(
         "notification_destinations",
-        sa.Column("encrypted_options", BYTEA(), nullable=True)
+        sa.Column("encrypted_options", BYTEA(), nullable=True),
     )
 
     # copy values
@@ -43,7 +43,7 @@ def upgrade():
             ),
         ),
         sa.Column(
-            "options", 
+            "options",
             ConfigurationContainer.as_mutable(
                 EncryptedConfiguration(
                     sa.Text, settings.DATASOURCE_SECRET_KEY, FernetEngine
@@ -56,8 +56,8 @@ def upgrade():
     for dest in conn.execute(notification_destinations.select()):
         conn.execute(
             notification_destinations.update()
-                .where(notification_destinations.c.id == dest.id)
-                .values(encrypted_options=dest.options)
+            .where(notification_destinations.c.id == dest.id)
+            .values(encrypted_options=dest.options)
         )
 
     op.drop_column("notification_destinations", "options")

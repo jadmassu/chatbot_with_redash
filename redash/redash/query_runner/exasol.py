@@ -102,7 +102,8 @@ class Exasol(BaseQueryRunner):
         try:
             statement = connection.execute(query)
             columns = [
-                {"name": n, "friendly_name": n, "type": _type_mapper(t)} for (n, t) in statement.columns().items()
+                {"name": n, "friendly_name": n, "type": _type_mapper(t)}
+                for (n, t) in statement.columns().items()
             ]
             cnames = statement.column_names()
 

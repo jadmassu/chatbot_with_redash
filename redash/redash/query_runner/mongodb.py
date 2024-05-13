@@ -179,10 +179,20 @@ class MongoDB(BaseQueryRunner):
         self.db_name = self.configuration["dbName"]
 
         self.is_replica_set = (
-            True if "replicaSetName" in self.configuration and self.configuration["replicaSetName"] else False
+            True
+            if "replicaSetName" in self.configuration
+            and self.configuration["replicaSetName"]
+            else False
         )
 
-        self.flatten = self.configuration.get("flatten", "False").upper() in ["TRUE", "YES", "ON", "1", "Y", "T"]
+        self.flatten = self.configuration.get("flatten", "False").upper() in [
+            "TRUE",
+            "YES",
+            "ON",
+            "1",
+            "Y",
+            "T",
+        ]
         logger.debug("flatten: {}".format(self.flatten))
 
     @classmethod
@@ -209,7 +219,9 @@ class MongoDB(BaseQueryRunner):
         if "password" in self.configuration:
             kwargs["password"] = self.configuration["password"]
 
-        db_connection = pymongo.MongoClient(self.configuration["connectionString"], **kwargs)
+        db_connection = pymongo.MongoClient(
+            self.configuration["connectionString"], **kwargs
+        )
 
         return db_connection[self.db_name]
 
@@ -281,7 +293,9 @@ class MongoDB(BaseQueryRunner):
     def run_query(self, query, user):  # noqa: C901
         db = self._get_db()
 
-        logger.debug("mongodb connection string: %s", self.configuration["connectionString"])
+        logger.debug(
+            "mongodb connection string: %s", self.configuration["connectionString"]
+        )
         logger.debug("mongodb got query: %s", query)
 
         try:
@@ -304,7 +318,9 @@ class MongoDB(BaseQueryRunner):
                     sort_list = []
                     for sort_item in step["$sort"]:
                         if isinstance(sort_item, dict):
-                            sort_list.append((sort_item["name"], sort_item.get("direction", 1)))
+                            sort_list.append(
+                                (sort_item["name"], sort_item.get("direction", 1))
+                            )
                         elif isinstance(sort_item, list):
                             sort_list.append(tuple(sort_item))
                     step["$sort"] = SON(sort_list)
@@ -327,7 +343,11 @@ class MongoDB(BaseQueryRunner):
         cursor = None
         if q or (not q and not aggregate):
             if "count" in query_data:
-                options = {opt: query_data[opt] for opt in ("skip", "limit") if opt in query_data}
+                options = {
+                    opt: query_data[opt]
+                    for opt in ("skip", "limit")
+                    if opt in query_data
+                }
                 cursor = db[collection].count_documents(q, **options)
             else:
                 if s:
@@ -356,7 +376,9 @@ class MongoDB(BaseQueryRunner):
                 cursor = r
 
         if "count" in query_data:
-            columns.append({"name": "count", "friendly_name": "count", "type": TYPE_INTEGER})
+            columns.append(
+                {"name": "count", "friendly_name": "count", "type": TYPE_INTEGER}
+            )
 
             rows.append({"count": cursor})
         else:

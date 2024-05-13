@@ -28,7 +28,9 @@ class Email(BaseDestination):
         return "fa-envelope"
 
     def notify(self, alert, query, user, new_state, app, host, metadata, options):
-        recipients = [email for email in options.get("addresses", "").split(",") if email]
+        recipients = [
+            email for email in options.get("addresses", "").split(",") if email
+        ]
 
         if not recipients:
             logging.warning("No emails given. Skipping send.")
@@ -45,7 +47,9 @@ class Email(BaseDestination):
             if alert.custom_subject:
                 subject = alert.custom_subject
             else:
-                subject_template = options.get("subject_template", settings.ALERTS_DEFAULT_MAIL_SUBJECT_TEMPLATE)
+                subject_template = options.get(
+                    "subject_template", settings.ALERTS_DEFAULT_MAIL_SUBJECT_TEMPLATE
+                )
                 subject = subject_template.format(alert_name=alert.name, state=state)
 
             message = Message(recipients=recipients, subject=subject, html=html)

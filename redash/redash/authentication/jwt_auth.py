@@ -55,7 +55,9 @@ def get_public_keys(url):
 get_public_keys.key_cache = {}
 
 
-def verify_jwt_token(jwt_token, expected_issuer, expected_audience, algorithms, public_certs_url):
+def verify_jwt_token(
+    jwt_token, expected_issuer, expected_audience, algorithms, public_certs_url
+):
     # https://developers.cloudflare.com/access/setting-up-access/validate-jwt-tokens/
     # https://cloud.google.com/iap/docs/signed-headers-howto
     # Loop through the keys since we can't pass the key set to the decoder
@@ -70,7 +72,9 @@ def verify_jwt_token(jwt_token, expected_issuer, expected_audience, algorithms, 
     for key in keys:
         try:
             # decode returns the claims which has the email if you need it
-            payload = jwt.decode(jwt_token, key=key, audience=expected_audience, algorithms=algorithms)
+            payload = jwt.decode(
+                jwt_token, key=key, audience=expected_audience, algorithms=algorithms
+            )
             issuer = payload["iss"]
             if issuer != expected_issuer:
                 raise Exception("Wrong issuer: {}".format(issuer))

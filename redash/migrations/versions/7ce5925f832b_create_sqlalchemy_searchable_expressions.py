@@ -11,8 +11,8 @@ from sqlalchemy_searchable import sql_expressions
 
 
 # revision identifiers, used by Alembic.
-revision = '7ce5925f832b'
-down_revision = '1038c2174f5d'
+revision = "7ce5925f832b"
+down_revision = "1038c2174f5d"
 branch_labels = None
 depends_on = None
 

@@ -20,14 +20,19 @@ def get_object_counts():
     status["queries_count"] = Query.query.count()
     if settings.FEATURE_SHOW_QUERY_RESULTS_COUNT:
         status["query_results_count"] = QueryResult.query.count()
-        status["unused_query_results_count"] = QueryResult.unused(settings.QUERY_RESULTS_CLEANUP_MAX_AGE).count()
+        status["unused_query_results_count"] = QueryResult.unused(
+            settings.QUERY_RESULTS_CLEANUP_MAX_AGE
+        ).count()
     status["dashboards_count"] = Dashboard.query.count()
     status["widgets_count"] = Widget.query.count()
     return status
 
 
 def get_queues_status():
-    return {queue.name: {"size": len(queue)} for queue in Queue.all(connection=rq_redis_connection)}
+    return {
+        queue.name: {"size": len(queue)}
+        for queue in Queue.all(connection=rq_redis_connection)
+    }
 
 
 def get_db_sizes():

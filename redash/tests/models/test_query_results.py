@@ -7,19 +7,25 @@ from tests import BaseTestCase
 
 class QueryResultTest(BaseTestCase):
     def test_get_latest_returns_none_if_not_found(self):
-        found_query_result = models.QueryResult.get_latest(self.factory.data_source, "SELECT 1", 60)
+        found_query_result = models.QueryResult.get_latest(
+            self.factory.data_source, "SELECT 1", 60
+        )
         self.assertIsNone(found_query_result)
 
     def test_get_latest_returns_when_found(self):
         qr = self.factory.create_query_result()
-        found_query_result = models.QueryResult.get_latest(qr.data_source, qr.query_text, 60)
+        found_query_result = models.QueryResult.get_latest(
+            qr.data_source, qr.query_text, 60
+        )
 
         self.assertEqual(qr, found_query_result)
 
     def test_get_latest_doesnt_return_query_from_different_data_source(self):
         qr = self.factory.create_query_result()
         data_source = self.factory.create_data_source()
-        found_query_result = models.QueryResult.get_latest(data_source, qr.query_text, 60)
+        found_query_result = models.QueryResult.get_latest(
+            data_source, qr.query_text, 60
+        )
 
         self.assertIsNone(found_query_result)
 
@@ -27,7 +33,9 @@ class QueryResultTest(BaseTestCase):
         yesterday = utcnow() - datetime.timedelta(days=1)
         qr = self.factory.create_query_result(retrieved_at=yesterday)
 
-        found_query_result = models.QueryResult.get_latest(qr.data_source, qr.query_text, max_age=60)
+        found_query_result = models.QueryResult.get_latest(
+            qr.data_source, qr.query_text, max_age=60
+        )
 
         self.assertIsNone(found_query_result)
 
@@ -35,7 +43,9 @@ class QueryResultTest(BaseTestCase):
         yesterday = utcnow() - datetime.timedelta(seconds=30)
         qr = self.factory.create_query_result(retrieved_at=yesterday)
 
-        found_query_result = models.QueryResult.get_latest(qr.data_source, qr.query_text, max_age=120)
+        found_query_result = models.QueryResult.get_latest(
+            qr.data_source, qr.query_text, max_age=120
+        )
 
         self.assertEqual(found_query_result, qr)
 
@@ -44,7 +54,9 @@ class QueryResultTest(BaseTestCase):
         self.factory.create_query_result(retrieved_at=yesterday)
         qr = self.factory.create_query_result()
 
-        found_query_result = models.QueryResult.get_latest(qr.data_source, qr.query_text, 60)
+        found_query_result = models.QueryResult.get_latest(
+            qr.data_source, qr.query_text, 60
+        )
 
         self.assertEqual(found_query_result.id, qr.id)
 
@@ -54,7 +66,9 @@ class QueryResultTest(BaseTestCase):
 
         yesterday = utcnow() + datetime.timedelta(days=-1)
         qr = self.factory.create_query_result(retrieved_at=yesterday)
-        found_query_result = models.QueryResult.get_latest(qr.data_source, qr.query_text, -1)
+        found_query_result = models.QueryResult.get_latest(
+            qr.data_source, qr.query_text, -1
+        )
 
         self.assertEqual(found_query_result.id, qr.id)
 

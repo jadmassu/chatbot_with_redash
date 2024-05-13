@@ -43,7 +43,9 @@ class TestDashboardsByUser(BaseTestCase):
 
     def test_returns_drafts_by_the_user(self):
         d = self.factory.create_dashboard(is_draft=True)
-        d2 = self.factory.create_dashboard(is_draft=True, user=self.factory.create_user())
+        d2 = self.factory.create_dashboard(
+            is_draft=True, user=self.factory.create_user()
+        )
 
         dashboards = Dashboard.by_user(self.factory.user)
 
@@ -81,4 +83,6 @@ class TestDashboardsByUser(BaseTestCase):
 
         results = Dashboard.all(self.factory.org, usr.group_ids, usr.id)
 
-        self.assertEqual(2, results.count(), "The incorrect number of dashboards were returned")
+        self.assertEqual(
+            2, results.count(), "The incorrect number of dashboards were returned"
+        )

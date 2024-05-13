@@ -155,7 +155,9 @@ class CorporateMemoryQueryRunner(BaseQueryRunner):
         # type of None means, there is an error in the query
         # so execution is at least tried on endpoint
         if query_type not in ["SELECT", None]:
-            raise ValueError("Queries of type {} can not be processed by redash.".format(query_type))
+            raise ValueError(
+                "Queries of type {} can not be processed by redash.".format(query_type)
+            )
 
         self._setup_environment()
         try:

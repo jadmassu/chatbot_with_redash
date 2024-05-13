@@ -21,7 +21,9 @@ logger = logging.getLogger(__name__)
 
 def get_google_auth_url(next_path):
     if settings.MULTI_ORG:
-        google_auth_url = url_for("google_oauth.authorize_org", next=next_path, org_slug=current_org.slug)
+        google_auth_url = url_for(
+            "google_oauth.authorize_org", next=next_path, org_slug=current_org.slug
+        )
     else:
         google_auth_url = url_for("google_oauth.authorize", next=next_path)
     return google_auth_url
@@ -121,7 +123,9 @@ def verify(token, org_slug=None):
         org = current_org._get_current_object()
         user = models.User.get_by_id_and_org(user_id, org)
     except (BadSignature, NoResultFound):
-        logger.exception("Failed to verify email verification token: %s, org=%s", token, org_slug)
+        logger.exception(
+            "Failed to verify email verification token: %s, org=%s", token, org_slug
+        )
         return (
             render_template(
                 "error.html",
@@ -168,7 +172,11 @@ def verification_email(org_slug=None):
     if not current_user.is_email_verified:
         send_verify_email(current_user, current_org)
 
-    return json_response({"message": "Please check your email inbox in order to verify your email address."})
+    return json_response(
+        {
+            "message": "Please check your email inbox in order to verify your email address."
+        }
+    )
 
 
 @routes.route(org_scoped_rule("/login"), methods=["GET", "POST"])
@@ -187,11 +195,17 @@ def login(org_slug=None):
     if current_user.is_authenticated:
         return redirect(next_path)
 
-    if request.method == "POST" and current_org.get_setting("auth_password_login_enabled"):
+    if request.method == "POST" and current_org.get_setting(
+        "auth_password_login_enabled"
+    ):
         try:
             org = current_org._get_current_object()
             user = models.User.get_by_email_and_org(request.form["email"], org)
-            if user and not user.is_disabled and user.verify_password(request.form["password"]):
+            if (
+                user
+                and not user.is_disabled
+                and user.verify_password(request.form["password"])
+            ):
                 remember = "remember" in request.form
                 login_user(user, remember=remember)
                 return redirect(next_path)
@@ -199,7 +213,9 @@ def login(org_slug=None):
                 flash("Wrong email or password.")
         except NoResultFound:
             flash("Wrong email or password.")
-    elif request.method == "POST" and not current_org.get_setting("auth_password_login_enabled"):
+    elif request.method == "POST" and not current_org.get_setting(
+        "auth_password_login_enabled"
+    ):
         flash("Password login is not enabled for your organization.")
 
     google_auth_url = get_google_auth_url(next_path)
@@ -263,7 +279,9 @@ def client_config():
 
     defaults = {
         "allowScriptsInUserInput": settings.ALLOW_SCRIPTS_IN_USER_INPUT,
-        "showPermissionsControl": current_org.get_setting("feature_show_permissions_control"),
+        "showPermissionsControl": current_org.get_setting(
+            "feature_show_permissions_control"
+        ),
         "hidePlotlyModeBar": current_org.get_setting("hide_plotly_mode_bar"),
         "disablePublicUrls": current_org.get_setting("disable_public_urls"),
         "allowCustomJSVisualizations": settings.FEATURE_ALLOW_CUSTOM_JS_VISUALIZATIONS,
@@ -301,7 +319,9 @@ def messages():
 
 @routes.route("/api/config", methods=["GET"])
 def config(org_slug=None):
-    return json_response({"org_slug": current_org.slug, "client_config": client_config()})
+    return json_response(
+        {"org_slug": current_org.slug, "client_config": client_config()}
+    )
 
 
 @routes.route(org_scoped_rule("/api/session"), methods=["GET"])

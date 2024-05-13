@@ -3,7 +3,9 @@ import os
 
 from flask import url_for
 
-WEBPACK_MANIFEST_PATH = os.path.join(os.path.dirname(__file__), "../../client/dist/", "asset-manifest.json")
+WEBPACK_MANIFEST_PATH = os.path.join(
+    os.path.dirname(__file__), "../../client/dist/", "asset-manifest.json"
+)
 
 
 def configure_webpack(app):

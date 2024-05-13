@@ -59,7 +59,10 @@ def _transform_result(results):
                 result_rows.append(result_row)
 
     if len(result_rows) > 0:
-        result_columns = [{"name": c, "type": _get_type(result_rows[0][c])} for c in result_rows[0].keys()]
+        result_columns = [
+            {"name": c, "type": _get_type(result_rows[0][c])}
+            for c in result_rows[0].keys()
+        ]
     else:
         result_columns = [{"name": c, "type": TYPE_STRING} for c in column_names]
 

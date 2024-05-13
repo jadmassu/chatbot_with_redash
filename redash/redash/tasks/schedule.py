@@ -29,7 +29,9 @@ class StatsdRecordingScheduler(Scheduler):
     queue_class = Queue
 
 
-rq_scheduler = StatsdRecordingScheduler(connection=rq_redis_connection, queue_name="periodic", interval=5)
+rq_scheduler = StatsdRecordingScheduler(
+    connection=rq_redis_connection, queue_name="periodic", interval=5
+)
 
 
 def job_id(kwargs):
@@ -92,11 +94,14 @@ def schedule_periodic_jobs(jobs):
     job_definitions = [prep(job) for job in jobs]
 
     jobs_to_clean_up = Job.fetch_many(
-        set([job.id for job in rq_scheduler.get_jobs()]) - set([job_id(job) for job in job_definitions]),
+        set([job.id for job in rq_scheduler.get_jobs()])
+        - set([job_id(job) for job in job_definitions]),
         rq_redis_connection,
     )
 
-    jobs_to_schedule = [job for job in job_definitions if job_id(job) not in rq_scheduler]
+    jobs_to_schedule = [
+        job for job in job_definitions if job_id(job) not in rq_scheduler
+    ]
 
     for job in jobs_to_clean_up:
         logger.info("Removing %s (%s) from schedule.", job.id, job.func_name)

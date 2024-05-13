@@ -27,7 +27,9 @@ def _unlock(query_hash, data_source_id):
     redis_connection.delete(_job_lock_id(query_hash, data_source_id))
 
 
-def enqueue_query(query, data_source, user_id, is_api_key=False, scheduled_query=None, metadata={}):
+def enqueue_query(
+    query, data_source, user_id, is_api_key=False, scheduled_query=None, metadata={}
+):
     query_hash = gen_query_hash(query)
     logger.info("Inserting job for %s with metadata=%s", query_hash, metadata)
     try_count = 0
@@ -77,7 +79,9 @@ def enqueue_query(query, data_source, user_id, is_api_key=False, scheduled_query
                     queue_name = data_source.queue_name
                     scheduled_query_id = None
 
-                time_limit = settings.dynamic_settings.query_time_limit(scheduled_query, user_id, data_source.org_id)
+                time_limit = settings.dynamic_settings.query_time_limit(
+                    scheduled_query, user_id, data_source.org_id
+                )
                 metadata["Queue"] = queue_name
 
                 queue = Queue(queue_name)
@@ -99,7 +103,9 @@ def enqueue_query(query, data_source, user_id, is_api_key=False, scheduled_query
                 if not scheduled_query:
                     enqueue_kwargs["result_ttl"] = settings.JOB_EXPIRY_TIME
 
-                job = queue.enqueue(execute_query, query, data_source.id, metadata, **enqueue_kwargs)
+                job = queue.enqueue(
+                    execute_query, query, data_source.id, metadata, **enqueue_kwargs
+                )
 
                 logger.info("[%s] Created new job: %s", query_hash, job.id)
                 pipe.set(
@@ -146,7 +152,9 @@ def _resolve_user(user_id, is_api_key, query_id):
 
 
 class QueryExecutor:
-    def __init__(self, query, data_source_id, user_id, is_api_key, metadata, is_scheduled_query):
+    def __init__(
+        self, query, data_source_id, user_id, is_api_key, metadata, is_scheduled_query
+    ):
         self.job = get_current_job()
         self.query = query
         self.data_source_id = data_source_id

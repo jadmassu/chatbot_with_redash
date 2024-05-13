@@ -15,9 +15,23 @@ def influx_table_list():
     tables = TableList()
     table_1 = FluxTable()
     table_2 = FluxTable()
-    column_1 = FluxColumn(index=0, label="col_1", data_type="string", group=False, default_value="default_value_2")
-    column_2 = FluxColumn(index=0, label="col_2", data_type="integer", group=False, default_value="default_value_2")
-    column_3 = FluxColumn(index=1, label="col_3", data_type="float", group=False, default_value=3.0)
+    column_1 = FluxColumn(
+        index=0,
+        label="col_1",
+        data_type="string",
+        group=False,
+        default_value="default_value_2",
+    )
+    column_2 = FluxColumn(
+        index=0,
+        label="col_2",
+        data_type="integer",
+        group=False,
+        default_value="default_value_2",
+    )
+    column_3 = FluxColumn(
+        index=1, label="col_3", data_type="float", group=False, default_value=3.0
+    )
 
     record_1 = FluxRecord(table_1, values={"col_1": "col_value_1", "col_2": 1})
     record_1.table = column_1.index
@@ -62,7 +76,11 @@ class TestInfluxDBv2:
         }
 
         create_cert_file_mock.assert_has_calls(
-            [mock.call("cert_File"), mock.call("cert_key_File"), mock.call("ssl_ca_cert_File")]
+            [
+                mock.call("cert_File"),
+                mock.call("cert_key_File"),
+                mock.call("ssl_ca_cert_File"),
+            ]
         )
 
         create_cert_file_mock.reset_mock()
@@ -73,7 +91,9 @@ class TestInfluxDBv2:
             "cert_key_File": "cert_key_file.key",
             "ssl_ca_cert_File": "ssl_ca_cert_file.crt",
         }
-        create_cert_file_mock.side_effect = lambda key: create_cert_file_return_dict[key]
+        create_cert_file_mock.side_effect = lambda key: create_cert_file_return_dict[
+            key
+        ]
 
         influx_db_v2 = InfluxDBv2(
             {
@@ -98,7 +118,11 @@ class TestInfluxDBv2:
             "ssl_ca_cert": "ssl_ca_cert_file.crt",
         }
         create_cert_file_mock.assert_has_calls(
-            [mock.call("cert_File"), mock.call("cert_key_File"), mock.call("ssl_ca_cert_File")]
+            [
+                mock.call("cert_File"),
+                mock.call("cert_key_File"),
+                mock.call("ssl_ca_cert_File"),
+            ]
         )
 
     @mock.patch("redash.query_runner.influx_db_v2.NamedTemporaryFile")
@@ -116,7 +140,9 @@ class TestInfluxDBv2:
         named_temporary_file_mock.reset_mock()
 
         # 2. case: with a valid key
-        influx_db_v2 = InfluxDBv2({"url": "url", "token": "token", "org": "org", "key": "dmFsdWU="})
+        influx_db_v2 = InfluxDBv2(
+            {"url": "url", "token": "token", "org": "org", "key": "dmFsdWU="}
+        )
 
         context_manager_mock = named_temporary_file_mock().__enter__()
         context_manager_mock.name = "cert_file_name"
@@ -162,16 +188,56 @@ class TestInfluxDBv2:
                 "url": {"type": "string", "title": "URL"},
                 "org": {"type": "string", "title": "Organization"},
                 "token": {"type": "string", "title": "Token"},
-                "verify_ssl": {"type": "boolean", "title": "Verify SSL", "default": False},
-                "cert_File": {"type": "string", "title": "SSL Client Certificate", "default": None},
-                "cert_key_File": {"type": "string", "title": "SSL Client Key", "default": None},
-                "cert_key_password": {"type": "string", "title": "Password for SSL Client Key", "default": None},
-                "ssl_ca_cert_File": {"type": "string", "title": "SSL Root Certificate", "default": None},
+                "verify_ssl": {
+                    "type": "boolean",
+                    "title": "Verify SSL",
+                    "default": False,
+                },
+                "cert_File": {
+                    "type": "string",
+                    "title": "SSL Client Certificate",
+                    "default": None,
+                },
+                "cert_key_File": {
+                    "type": "string",
+                    "title": "SSL Client Key",
+                    "default": None,
+                },
+                "cert_key_password": {
+                    "type": "string",
+                    "title": "Password for SSL Client Key",
+                    "default": None,
+                },
+                "ssl_ca_cert_File": {
+                    "type": "string",
+                    "title": "SSL Root Certificate",
+                    "default": None,
+                },
             },
-            "order": ["url", "org", "token", "cert_File", "cert_key_File", "cert_key_password", "ssl_ca_cert_File"],
+            "order": [
+                "url",
+                "org",
+                "token",
+                "cert_File",
+                "cert_key_File",
+                "cert_key_password",
+                "ssl_ca_cert_File",
+            ],
             "required": ["url", "org", "token"],
-            "secret": ["token", "cert_File", "cert_key_File", "cert_key_password", "ssl_ca_cert_File"],
-            "extra_options": ["verify_ssl", "cert_File", "cert_key_File", "cert_key_password", "ssl_ca_cert_File"],
+            "secret": [
+                "token",
+                "cert_File",
+                "cert_key_File",
+                "cert_key_password",
+                "ssl_ca_cert_File",
+            ],
+            "extra_options": [
+                "verify_ssl",
+                "cert_File",
+                "cert_key_File",
+                "cert_key_password",
+                "ssl_ca_cert_File",
+            ],
         }
 
     def test_enabled(self):
@@ -201,7 +267,9 @@ class TestInfluxDBv2:
 
         influx_db_v2.test_connection()
 
-        influx_db_client_mock.assert_called_once_with(url="url", token="token", org="org", **influx_kwargs)
+        influx_db_client_mock.assert_called_once_with(
+            url="url", token="token", org="org", **influx_kwargs
+        )
         health_mock.assert_called_once()
         cleanup_cert_files_mock.assert_called_once_with(influx_kwargs)
         logger_mock.error.assert_not_called()
@@ -220,16 +288,25 @@ class TestInfluxDBv2:
         }
 
         health_mock = influx_db_client_mock.return_value.__enter__().health
-        health_mock.return_value = mock.MagicMock(status="fail", message="Connection failed.")
+        health_mock.return_value = mock.MagicMock(
+            status="fail", message="Connection failed."
+        )
 
         with pytest.raises(Exception) as exp:
             influx_db_v2.test_connection()
 
-        assert str(exp.value) == "InfluxDB is not healthy. Check logs for more information."
-        influx_db_client_mock.assert_called_once_with(url="url", token="token", org="org", **influx_kwargs)
+        assert (
+            str(exp.value)
+            == "InfluxDB is not healthy. Check logs for more information."
+        )
+        influx_db_client_mock.assert_called_once_with(
+            url="url", token="token", org="org", **influx_kwargs
+        )
         health_mock.assert_called_once()
         cleanup_cert_files_mock.assert_called_once_with(influx_kwargs)
-        logger_mock.error.assert_called_once_with("Connection test failed, due to: 'Connection failed.'.")
+        logger_mock.error.assert_called_once_with(
+            "Connection test failed, due to: 'Connection failed.'."
+        )
 
     def test_get_type(self):
         influx_db_v2 = InfluxDBv2(
@@ -265,7 +342,11 @@ class TestInfluxDBv2:
                 {"friendly_name": "Col_2", "name": "col_2", "type": "integer"},
                 {"friendly_name": "Col_3", "name": "col_3", "type": "float"},
             ],
-            "rows": [{"col_1": "col_value_1", "col_2": 1}, {"col_1": "col_value_2", "col_2": 2}, {"col_3": 3.0}],
+            "rows": [
+                {"col_1": "col_value_1", "col_2": 1},
+                {"col_1": "col_value_2", "col_2": 2},
+                {"col_3": 3.0},
+            ],
         }
 
         # 2. case: get empty object without coulmns and rows
@@ -296,7 +377,11 @@ class TestInfluxDBv2:
             "cert_key_password": None,
             "ssl_ca_cert": None,
         }
-        query = 'from(bucket: "test")' "|> range(start: 2023-12-04T09:00:00.000Z, " "stop: 2023-12-04T15:00:00.000Z)"
+        query = (
+            'from(bucket: "test")'
+            "|> range(start: 2023-12-04T09:00:00.000Z, "
+            "stop: 2023-12-04T15:00:00.000Z)"
+        )
 
         result_data = {
             "columns": [
@@ -304,7 +389,11 @@ class TestInfluxDBv2:
                 {"friendly_name": "Col_2", "name": "col_2", "type": "integer"},
                 {"friendly_name": "Col_3", "name": "col_3", "type": "float"},
             ],
-            "rows": [{"col_1": "col_value_1", "col_2": 1}, {"col_1": "col_value_2", "col_2": 2}, {"col_3": 3.0}],
+            "rows": [
+                {"col_1": "col_value_1", "col_2": 1},
+                {"col_1": "col_value_2", "col_2": 2},
+                {"col_3": 3.0},
+            ],
         }
 
         query_mock = influx_db_client_mock.return_value.__enter__().query_api().query
@@ -316,7 +405,9 @@ class TestInfluxDBv2:
         assert data == result_data
         assert error is None
 
-        influx_db_client_mock.assert_called_once_with(url="url", token="token", org="org", **influx_kwargs)
+        influx_db_client_mock.assert_called_once_with(
+            url="url", token="token", org="org", **influx_kwargs
+        )
         logger_mock.debug.assert_called_once_with(f"InfluxDB got query: {query!r}")
         query_mock.assert_called_once_with(query)
         cleanup_cert_files_mock.assert_called_once_with(influx_kwargs)
@@ -333,7 +424,9 @@ class TestInfluxDBv2:
         assert data is None
         assert error == "test error"
 
-        influx_db_client_mock.assert_called_once_with(url="url", token="token", org="org", **influx_kwargs)
+        influx_db_client_mock.assert_called_once_with(
+            url="url", token="token", org="org", **influx_kwargs
+        )
         logger_mock.debug.assert_called_once_with(f"InfluxDB got query: {query!r}")
         query_mock.assert_called_once_with(query)
         cleanup_cert_files_mock.assert_called_once_with(influx_kwargs)

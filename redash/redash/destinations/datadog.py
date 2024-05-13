@@ -15,9 +15,17 @@ class Datadog(BaseDestination):
             "properties": {
                 "api_key": {"type": "string", "title": "API Key"},
                 "tags": {"type": "string", "title": "Tags"},
-                "priority": {"type": "string", "default": "normal", "title": "Priority"},
+                "priority": {
+                    "type": "string",
+                    "default": "normal",
+                    "title": "Priority",
+                },
                 # https://docs.datadoghq.com/integrations/faq/list-of-api-source-attribute-value/
-                "source_type_name": {"type": "string", "default": "my_apps", "title": "Source Type Name"},
+                "source_type_name": {
+                    "type": "string",
+                    "default": "my_apps",
+                    "title": "Source Type Name",
+                },
             },
             "secret": ["api_key"],
             "required": ["api_key"],
@@ -82,7 +90,9 @@ class Datadog(BaseDestination):
         url = f"https://{dd_host}/api/v1/events"
 
         try:
-            resp = requests.post(url, headers=headers, data=json_dumps(body), timeout=5.0)
+            resp = requests.post(
+                url, headers=headers, data=json_dumps(body), timeout=5.0
+            )
             logging.warning(resp.text)
             if resp.status_code != 202:
                 logging.error(f"Datadog send ERROR. status_code => {resp.status_code}")

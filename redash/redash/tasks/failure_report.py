@@ -67,7 +67,9 @@ def send_failure_report(user_id):
 
 def notify_of_failure(message, query):
     subscribed = query.org.get_setting("send_email_on_failed_scheduled_queries")
-    exceeded_threshold = query.schedule_failures >= settings.MAX_FAILURE_REPORTS_PER_QUERY
+    exceeded_threshold = (
+        query.schedule_failures >= settings.MAX_FAILURE_REPORTS_PER_QUERY
+    )
 
     if subscribed and not query.user.is_disabled and not exceeded_threshold:
         redis_connection.lpush(
@@ -78,7 +80,9 @@ def notify_of_failure(message, query):
                     "name": query.name,
                     "message": message,
                     "schedule_failures": query.schedule_failures,
-                    "failed_at": datetime.datetime.utcnow().strftime("%B %d, %Y %I:%M%p UTC"),
+                    "failed_at": datetime.datetime.utcnow().strftime(
+                        "%B %d, %Y %I:%M%p UTC"
+                    ),
                 }
             ),
         )

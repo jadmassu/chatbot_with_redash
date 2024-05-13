@@ -32,7 +32,9 @@ class TestGlueSchema(TestCase):
         """Unpartitioned table crawled through a JDBC connection"""
         query_runner = Athena({"glue": True, "region": "mars-east-1"})
 
-        self.stubber.add_response("get_databases", {"DatabaseList": [{"Name": "test1"}]}, {})
+        self.stubber.add_response(
+            "get_databases", {"DatabaseList": [{"Name": "test1"}]}, {}
+        )
         self.stubber.add_response(
             "get_tables",
             {
@@ -76,7 +78,11 @@ class TestGlueSchema(TestCase):
         )
         with self.stubber:
             assert query_runner.get_schema() == [
-                {"columns": [{"name": "row_id", "type": "int"}], "name": "test1.jdbc_table", "description": None}
+                {
+                    "columns": [{"name": "row_id", "type": "int"}],
+                    "name": "test1.jdbc_table",
+                    "description": None,
+                }
             ]
 
     def test_partitioned_table(self):
@@ -86,7 +92,9 @@ class TestGlueSchema(TestCase):
 
         query_runner = Athena({"glue": True, "region": "mars-east-1"})
 
-        self.stubber.add_response("get_databases", {"DatabaseList": [{"Name": "test1"}]}, {})
+        self.stubber.add_response(
+            "get_databases", {"DatabaseList": [{"Name": "test1"}]}, {}
+        )
         self.stubber.add_response(
             "get_tables",
             {
@@ -140,7 +148,9 @@ class TestGlueSchema(TestCase):
     def test_view(self):
         query_runner = Athena({"glue": True, "region": "mars-east-1"})
 
-        self.stubber.add_response("get_databases", {"DatabaseList": [{"Name": "test1"}]}, {})
+        self.stubber.add_response(
+            "get_databases", {"DatabaseList": [{"Name": "test1"}]}, {}
+        )
         self.stubber.add_response(
             "get_tables",
             {
@@ -168,7 +178,11 @@ class TestGlueSchema(TestCase):
         )
         with self.stubber:
             assert query_runner.get_schema() == [
-                {"columns": [{"name": "sk", "type": "int"}], "name": "test1.view", "description": None}
+                {
+                    "columns": [{"name": "sk", "type": "int"}],
+                    "name": "test1.view",
+                    "description": None,
+                }
             ]
 
     def test_dodgy_table_does_not_break_schema_listing(self):
@@ -179,7 +193,9 @@ class TestGlueSchema(TestCase):
         """
         query_runner = Athena({"glue": True, "region": "mars-east-1"})
 
-        self.stubber.add_response("get_databases", {"DatabaseList": [{"Name": "test1"}]}, {})
+        self.stubber.add_response(
+            "get_databases", {"DatabaseList": [{"Name": "test1"}]}, {}
+        )
         self.stubber.add_response(
             "get_tables",
             {
@@ -210,7 +226,11 @@ class TestGlueSchema(TestCase):
         )
         with self.stubber:
             assert query_runner.get_schema() == [
-                {"columns": [{"name": "region", "type": "string"}], "name": "test1.csv", "description": None}
+                {
+                    "columns": [{"name": "region", "type": "string"}],
+                    "name": "test1.csv",
+                    "description": None,
+                }
             ]
 
     def test_no_storage_descriptor_table(self):
@@ -219,7 +239,9 @@ class TestGlueSchema(TestCase):
         """
         query_runner = Athena({"glue": True, "region": "mars-east-1"})
 
-        self.stubber.add_response("get_databases", {"DatabaseList": [{"Name": "test1"}]}, {})
+        self.stubber.add_response(
+            "get_databases", {"DatabaseList": [{"Name": "test1"}]}, {}
+        )
         self.stubber.add_response(
             "get_tables",
             {

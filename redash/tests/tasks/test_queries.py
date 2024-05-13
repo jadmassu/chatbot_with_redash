@@ -191,7 +191,9 @@ class QueryExecutorTests(BaseTestCase):
         """
         Scheduled queries remember their latest results.
         """
-        q = self.factory.create_query(query_text="SELECT 1, 2", schedule={"interval": 300})
+        q = self.factory.create_query(
+            query_text="SELECT 1, 2", schedule={"interval": 300}
+        )
         with patch.object(PostgreSQL, "run_query") as qr:
             qr.return_value = (
                 {
@@ -218,7 +220,9 @@ class QueryExecutorTests(BaseTestCase):
         """
         Scheduled queries that fail have their failure recorded.
         """
-        q = self.factory.create_query(query_text="SELECT 1, 2", schedule={"interval": 300})
+        q = self.factory.create_query(
+            query_text="SELECT 1, 2", schedule={"interval": 300}
+        )
         with patch.object(PostgreSQL, "run_query") as qr:
             qr.side_effect = ValueError("broken")
 
@@ -246,7 +250,9 @@ class QueryExecutorTests(BaseTestCase):
         """
         Query execution success resets the failure counter.
         """
-        q = self.factory.create_query(query_text="SELECT 1, 2", schedule={"interval": 300})
+        q = self.factory.create_query(
+            query_text="SELECT 1, 2", schedule={"interval": 300}
+        )
         with patch.object(PostgreSQL, "run_query") as qr:
             qr.side_effect = ValueError("broken")
             result = execute_query(
@@ -283,7 +289,9 @@ class QueryExecutorTests(BaseTestCase):
         """
         Query execution success resets the failure counter, even if it runs as an adhoc query.
         """
-        q = self.factory.create_query(query_text="SELECT 1, 2", schedule={"interval": 300})
+        q = self.factory.create_query(
+            query_text="SELECT 1, 2", schedule={"interval": 300}
+        )
         with patch.object(PostgreSQL, "run_query") as qr:
             qr.side_effect = ValueError("broken")
             result = execute_query(

@@ -79,17 +79,27 @@ class Hive(BaseSQLQueryRunner):
         columns_query = "show columns in %s.%s"
 
         for schema_name in [
-            a for a in [str(a["database_name"]) for a in self._run_query_internal(schemas_query)] if len(a) > 0
+            a
+            for a in [
+                str(a["database_name"]) for a in self._run_query_internal(schemas_query)
+            ]
+            if len(a) > 0
         ]:
             for table_name in [
                 a
-                for a in [str(a["tab_name"]) for a in self._run_query_internal(tables_query % schema_name)]
+                for a in [
+                    str(a["tab_name"])
+                    for a in self._run_query_internal(tables_query % schema_name)
+                ]
                 if len(a) > 0
             ]:
                 columns = [
                     a
                     for a in [
-                        str(a["field"]) for a in self._run_query_internal(columns_query % (schema_name, table_name))
+                        str(a["field"])
+                        for a in self._run_query_internal(
+                            columns_query % (schema_name, table_name)
+                        )
                     ]
                     if len(a) > 0
                 ]
@@ -219,7 +229,9 @@ class HiveHttp(Hive):
         username = self.configuration.get("username", "")
         password = self.configuration.get("http_password", "")
         if username or password:
-            auth = base64.b64encode(username.encode("ascii") + b":" + password.encode("ascii"))
+            auth = base64.b64encode(
+                username.encode("ascii") + b":" + password.encode("ascii")
+            )
             transport.setCustomHeaders({"Authorization": "Basic " + auth.decode()})
 
         # create connection

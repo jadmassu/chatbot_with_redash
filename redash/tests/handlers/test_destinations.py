@@ -33,7 +33,9 @@ class TestDestinationListResource(BaseTestCase):
             "name": "Test",
             "type": "email",
         }
-        rv = self.make_request("post", "/api/destinations", user=self.factory.create_admin(), data=data)
+        rv = self.make_request(
+            "post", "/api/destinations", user=self.factory.create_admin(), data=data
+        )
         self.assertEqual(rv.status_code, 200)
         pass
 
@@ -43,7 +45,9 @@ class TestDestinationListResource(BaseTestCase):
             "name": "Test",
             "type": "email",
         }
-        rv = self.make_request("post", "/api/destinations", user=self.factory.user, data=data)
+        rv = self.make_request(
+            "post", "/api/destinations", user=self.factory.user, data=data
+        )
         self.assertEqual(rv.status_code, 403)
 
     def test_returns_400_when_name_already_exists(self):
@@ -54,14 +58,18 @@ class TestDestinationListResource(BaseTestCase):
             "type": "email",
         }
 
-        rv = self.make_request("post", "/api/destinations", user=self.factory.create_admin(), data=data)
+        rv = self.make_request(
+            "post", "/api/destinations", user=self.factory.create_admin(), data=data
+        )
         self.assertEqual(rv.status_code, 400)
 
 
 class TestDestinationResource(BaseTestCase):
     def test_get(self):
         d = self.factory.create_destination()
-        rv = self.make_request("get", "/api/destinations/{}".format(d.id), user=self.factory.create_admin())
+        rv = self.make_request(
+            "get", "/api/destinations/{}".format(d.id), user=self.factory.create_admin()
+        )
         self.assertEqual(rv.status_code, 200)
 
     def test_delete(self):
@@ -98,7 +106,9 @@ class TestDestinationResource(BaseTestCase):
 
 
 def test_discord_notify_calls_requests_post():
-    alert = mock.Mock(spec_set=["id", "name", "options", "custom_body", "render_template"])
+    alert = mock.Mock(
+        spec_set=["id", "name", "options", "custom_body", "render_template"]
+    )
     alert.id = 1
     alert.name = "Test Alert"
     alert.options = {
@@ -131,8 +141,16 @@ def test_discord_notify_calls_requests_post():
                 {
                     "color": "12597547",
                     "fields": [
-                        {"name": "Query", "value": f"{host}/queries/{query.id}", "inline": True},
-                        {"name": "Alert", "value": f"{host}/alerts/{alert.id}", "inline": True},
+                        {
+                            "name": "Query",
+                            "value": f"{host}/queries/{query.id}",
+                            "inline": True,
+                        },
+                        {
+                            "name": "Alert",
+                            "value": f"{host}/alerts/{alert.id}",
+                            "inline": True,
+                        },
                         {"name": "Description", "value": "Test custom body"},
                     ],
                 }
@@ -203,7 +221,9 @@ def test_asana_notify_calls_requests_post():
 
 
 def test_slack_notify_calls_requests_post():
-    alert = mock.Mock(spec_set=["id", "name", "custom_subject", "custom_body", "render_template"])
+    alert = mock.Mock(
+        spec_set=["id", "name", "custom_subject", "custom_body", "render_template"]
+    )
     alert.id = 1
     alert.name = "Test Alert"
     alert.custom_subject = "Test custom subject"
@@ -256,7 +276,9 @@ def test_slack_notify_calls_requests_post():
 
 
 def test_webex_notify_calls_requests_post():
-    alert = mock.Mock(spec_set=["id", "name", "custom_subject", "custom_body", "render_template"])
+    alert = mock.Mock(
+        spec_set=["id", "name", "custom_subject", "custom_body", "render_template"]
+    )
     alert.id = 1
     alert.name = "Test Alert"
     alert.custom_subject = "Test custom subject"
@@ -306,7 +328,9 @@ def test_webex_notify_calls_requests_post():
 
 
 def test_datadog_notify_calls_requests_post():
-    alert = mock.Mock(spec_set=["id", "name", "custom_subject", "custom_body", "render_template"])
+    alert = mock.Mock(
+        spec_set=["id", "name", "custom_subject", "custom_body", "render_template"]
+    )
     alert.id = 1
     alert.name = "Test Alert"
     alert.custom_subject = "Test custom subject"

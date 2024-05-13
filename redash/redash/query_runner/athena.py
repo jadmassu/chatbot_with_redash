@@ -15,9 +15,13 @@ from redash.settings import parse_boolean
 
 logger = logging.getLogger(__name__)
 ANNOTATE_QUERY = parse_boolean(os.environ.get("ATHENA_ANNOTATE_QUERY", "true"))
-SHOW_EXTRA_SETTINGS = parse_boolean(os.environ.get("ATHENA_SHOW_EXTRA_SETTINGS", "true"))
+SHOW_EXTRA_SETTINGS = parse_boolean(
+    os.environ.get("ATHENA_SHOW_EXTRA_SETTINGS", "true")
+)
 ASSUME_ROLE = parse_boolean(os.environ.get("ATHENA_ASSUME_ROLE", "false"))
-OPTIONAL_CREDENTIALS = parse_boolean(os.environ.get("ATHENA_OPTIONAL_CREDENTIALS", "true"))
+OPTIONAL_CREDENTIALS = parse_boolean(
+    os.environ.get("ATHENA_OPTIONAL_CREDENTIALS", "true")
+)
 
 try:
     import boto3
@@ -187,7 +191,9 @@ class Athena(BaseQueryRunner):
                 for table in iterator.search("TableList[]"):
                     table_name = "%s.%s" % (database["Name"], table["Name"])
                     if "StorageDescriptor" not in table:
-                        logger.warning("Glue table doesn't have StorageDescriptor: %s", table_name)
+                        logger.warning(
+                            "Glue table doesn't have StorageDescriptor: %s", table_name
+                        )
                         continue
                     if table_name not in schema:
                         columns = []
@@ -258,7 +264,9 @@ class Athena(BaseQueryRunner):
 
         try:
             cursor.execute(query)
-            column_tuples = [(i[0], _TYPE_MAPPINGS.get(i[1], None)) for i in cursor.description]
+            column_tuples = [
+                (i[0], _TYPE_MAPPINGS.get(i[1], None)) for i in cursor.description
+            ]
             columns = self.fetch_columns(column_tuples)
             df = cursor.as_pandas().replace({pd.NA: None})
             rows = df.to_dict(orient="records")

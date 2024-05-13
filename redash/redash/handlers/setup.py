@@ -56,7 +56,9 @@ def setup():
     form = SetupForm(request.form)
 
     if request.method == "POST" and form.validate():
-        default_org, user = create_org(form.org_name.data, form.name.data, form.email.data, form.password.data)
+        default_org, user = create_org(
+            form.org_name.data, form.name.data, form.email.data, form.password.data
+        )
 
         g.org = default_org
         login_user(user)
