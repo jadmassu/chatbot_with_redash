@@ -5,6 +5,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
+from quart_cors import cors
 
 rpath = os.path.abspath("../../../../backend")
 
@@ -14,20 +15,24 @@ if rpath not in sys.path:
 
 app = Quart(__name__)
 # from api.src.llm.tools import chatCompletion
+app = cors(app, allow_origin="*")
 
 load_dotenv()
 llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def run() -> None:
-    app.run()
+    # app.run()
+    app.run(host="0.0.0.0", port=5000)
 
 
 @app.post("/getQuery")
 async def userInput():
     userInput = await request.get_json()
-    message = userInput.get("query")
-    print("mesaf", message)
+    print("ttttttttttttttt", userInput)
+
+    # message = userInput.get("question")
+    print("mesaf", userInput)
     prompt = ChatPromptTemplate.from_messages(
         [
             (
@@ -39,7 +44,9 @@ async def userInput():
     )
     output_parser = StrOutputParser()
     chain = prompt | llm | output_parser
-    return chain.invoke({"input": message})
+    response = chain.invoke({"input": userInput})
+    print("RES---", response)
+    return {"response": response}
 
 
 @app.post("/echo")

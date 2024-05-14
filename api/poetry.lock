@@ -1422,6 +1422,20 @@ docs = ["pydata_sphinx_theme"]
 dotenv = ["python-dotenv"]
 
 [[package]]
+name = "quart-cors"
+version = "0.7.0"
+description = "A Quart extension to provide Cross Origin Resource Sharing, access control, support"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "quart_cors-0.7.0-py3-none-any.whl", hash = "sha256:fa872cc94a2ae6b51a35b028ebca65c14069d7121d63a4caa3526ebbfb7c5a99"},
+    {file = "quart_cors-0.7.0.tar.gz", hash = "sha256:d667a0f13b4ce6d9e926489de5d819780844fbff5b2cdea156bd8867dd426a37"},
+]
+
+[package.dependencies]
+quart = ">=0.15"
+
+[[package]]
 name = "regex"
 version = "2024.5.10"
 description = "Alternative regular expression module, to replace re."
@@ -1920,4 +1934,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b67f6f4850f2d31418ee0e0d02796232fe090bf6e868b3cabd32d8e7f1abd399"
+content-hash = "739692ebd695a294ec307dc6ba609edaafa240b2157f6d8f2d89ffa69973e997"

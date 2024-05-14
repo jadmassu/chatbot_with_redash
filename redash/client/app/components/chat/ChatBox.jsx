@@ -29,7 +29,7 @@ export default function ChatBox() {
       setInput("");  
     }
   }
-
+ 
   async function chatWithOpenai(text) {
     const requestOptions = {
         question: text
