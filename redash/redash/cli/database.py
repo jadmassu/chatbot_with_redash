@@ -93,7 +93,9 @@ def reencrypt(old_secret, new_secret, show_sql):
             Column("id", key_type(orm_name), primary_key=True),
             Column(
                 "encrypted_options",
-                ConfigurationContainer.as_mutable(EncryptedConfiguration(db.Text, old_secret, FernetEngine)),
+                ConfigurationContainer.as_mutable(
+                    EncryptedConfiguration(db.Text, old_secret, FernetEngine)
+                ),
             ),
         )
         table_for_update = sqlalchemy.Table(
@@ -102,7 +104,9 @@ def reencrypt(old_secret, new_secret, show_sql):
             Column("id", key_type(orm_name), primary_key=True),
             Column(
                 "encrypted_options",
-                ConfigurationContainer.as_mutable(EncryptedConfiguration(db.Text, new_secret, FernetEngine)),
+                ConfigurationContainer.as_mutable(
+                    EncryptedConfiguration(db.Text, new_secret, FernetEngine)
+                ),
             ),
         )
 
@@ -114,7 +118,9 @@ def reencrypt(old_secret, new_secret, show_sql):
                     encrypted_options=item["encrypted_options"]
                 )
             except InvalidToken:
-                logging.error(f'Invalid Decryption Key for id {item["id"]} in table {table_for_select}')
+                logging.error(
+                    f'Invalid Decryption Key for id {item["id"]} in table {table_for_select}'
+                )
             else:
                 db.session.execute(stmt)
 

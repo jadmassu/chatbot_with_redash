@@ -20,7 +20,9 @@ class TestQuerySnippetResource(BaseTestCase):
             "description": "updated description",
         }
 
-        rv = self.make_request("post", "/api/query_snippets/{}".format(snippet.id), data=data)
+        rv = self.make_request(
+            "post", "/api/query_snippets/{}".format(snippet.id), data=data
+        )
 
         for field in ("snippet", "description", "trigger"):
             self.assertEqual(rv.json[field], data[field])
@@ -46,7 +48,9 @@ class TestQuerySnippetListResource(BaseTestCase):
     def test_list_all_snippets(self):
         snippet1 = self.factory.create_query_snippet()
         snippet2 = self.factory.create_query_snippet()
-        snippet_diff_org = self.factory.create_query_snippet(org=self.factory.create_org())
+        snippet_diff_org = self.factory.create_query_snippet(
+            org=self.factory.create_org()
+        )
 
         rv = self.make_request("get", "/api/query_snippets")
         ids = [s["id"] for s in rv.json]

@@ -142,7 +142,10 @@ def create_root(email, name, google_auth=False, password=None, organization="def
     """
     Create root user.
     """
-    print("Creating root user (%s, %s) in organization %s..." % (email, name, organization))
+    print(
+        "Creating root user (%s, %s) in organization %s..."
+        % (email, name, organization)
+    )
     print("Login with Google Auth: %r\n" % google_auth)
 
     user = models.User.query.filter(models.User.email == email).first()
@@ -202,9 +205,13 @@ def delete(email, organization=None):
     """
     if organization:
         org = models.Organization.get_by_slug(organization)
-        deleted_count = models.User.query.filter(models.User.email == email, models.User.org == org.id).delete()
+        deleted_count = models.User.query.filter(
+            models.User.email == email, models.User.org == org.id
+        ).delete()
     else:
-        deleted_count = models.User.query.filter(models.User.email == email).delete(synchronize_session=False)
+        deleted_count = models.User.query.filter(models.User.email == email).delete(
+            synchronize_session=False
+        )
     models.db.session.commit()
     print("Deleted %d users." % deleted_count)
 
@@ -224,7 +231,9 @@ def password(email, password, organization=None):
     """
     if organization:
         org = models.Organization.get_by_slug(organization)
-        user = models.User.query.filter(models.User.email == email, models.User.org == org).first()
+        user = models.User.query.filter(
+            models.User.email == email, models.User.org == org
+        ).first()
     else:
         user = models.User.query.filter(models.User.email == email).first()
 

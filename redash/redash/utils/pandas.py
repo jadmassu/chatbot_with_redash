@@ -37,7 +37,9 @@ if pandas_installed:
             else:
                 redash_type = TYPE_STRING
 
-            columns.append({"name": column_name, "friendly_name": column_name, "type": redash_type})
+            columns.append(
+                {"name": column_name, "friendly_name": column_name, "type": redash_type}
+            )
 
         return columns
 

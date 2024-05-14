@@ -119,7 +119,9 @@ class HardLimitingWorker(BaseWorker):
         job.started_at = utcnow()
         while True:
             try:
-                with UnixSignalDeathPenalty(self.job_monitoring_interval, HorseMonitorTimeoutException):
+                with UnixSignalDeathPenalty(
+                    self.job_monitoring_interval, HorseMonitorTimeoutException
+                ):
                     retpid, ret_val = os.waitpid(self._horse_pid, 0)
                 break
             except HorseMonitorTimeoutException:
@@ -151,7 +153,12 @@ class HardLimitingWorker(BaseWorker):
         job_status = job.get_status()
         if job_status is None:  # Job completed and its ttl has expired
             return
-        if job_status not in [JobStatus.FINISHED, JobStatus.FAILED, JobStatus.STOPPED, JobStatus.CANCELED]:
+        if job_status not in [
+            JobStatus.FINISHED,
+            JobStatus.FAILED,
+            JobStatus.STOPPED,
+            JobStatus.CANCELED,
+        ]:
             if not job.ended_at:
                 job.ended_at = utcnow()
 

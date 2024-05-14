@@ -104,9 +104,17 @@ class Databricks(BaseSQLQueryRunner):
 
             if cursor.description is not None:
                 result_set = cursor.fetchmany(ROW_LIMIT)
-                columns = self.fetch_columns([(i[0], TYPES_MAP.get(i[1], TYPE_STRING)) for i in cursor.description])
+                columns = self.fetch_columns(
+                    [
+                        (i[0], TYPES_MAP.get(i[1], TYPE_STRING))
+                        for i in cursor.description
+                    ]
+                )
 
-                rows = [dict(zip((column["name"] for column in columns), row)) for row in result_set]
+                rows = [
+                    dict(zip((column["name"] for column in columns), row))
+                    for row in result_set
+                ]
 
                 data = {"columns": columns, "rows": rows}
 

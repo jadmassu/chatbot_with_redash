@@ -56,7 +56,10 @@ class Cassandra(BaseQueryRunner):
                 },
                 "timeout": {"type": "number", "title": "Timeout", "default": 10},
                 "useSsl": {"type": "boolean", "title": "Use SSL", "default": False},
-                "sslCertificateFile": {"type": "string", "title": "SSL Certificate File"},
+                "sslCertificateFile": {
+                    "type": "string",
+                    "title": "SSL Certificate File",
+                },
                 "sslProtocol": {
                     "type": "string",
                     "title": "SSL Protocol",
@@ -118,7 +121,9 @@ class Cassandra(BaseQueryRunner):
     def run_query(self, query, user):
         connection = None
         cert_path = self._generate_cert_file()
-        if self.configuration.get("username", "") and self.configuration.get("password", ""):
+        if self.configuration.get("username", "") and self.configuration.get(
+            "password", ""
+        ):
             auth_provider = PlainTextAuthProvider(
                 username="{}".format(self.configuration.get("username", "")),
                 password="{}".format(self.configuration.get("password", "")),
@@ -170,7 +175,9 @@ class Cassandra(BaseQueryRunner):
     def _get_ssl_options(self, cert_path):
         ssl_options = None
         if self.configuration.get("useSsl", False):
-            ssl_options = generate_ssl_options_dict(protocol=self.configuration["sslProtocol"], cert_path=cert_path)
+            ssl_options = generate_ssl_options_dict(
+                protocol=self.configuration["sslProtocol"], cert_path=cert_path
+            )
         return ssl_options
 
 

@@ -137,8 +137,13 @@ class SqlServer(BaseSQLQueryRunner):
             data = cursor.fetchall()
 
             if cursor.description is not None:
-                columns = self.fetch_columns([(i[0], types_map.get(i[1], None)) for i in cursor.description])
-                rows = [dict(zip((column["name"] for column in columns), row)) for row in data]
+                columns = self.fetch_columns(
+                    [(i[0], types_map.get(i[1], None)) for i in cursor.description]
+                )
+                rows = [
+                    dict(zip((column["name"] for column in columns), row))
+                    for row in data
+                ]
 
                 data = {"columns": columns, "rows": rows}
                 error = None

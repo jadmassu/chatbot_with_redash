@@ -52,7 +52,9 @@ def parse_results(results):
                             {
                                 "name": column_name,
                                 "friendly_name": column_name,
-                                "type": TYPES_MAP.get(type(row[key][inner_key]), TYPE_STRING),
+                                "type": TYPES_MAP.get(
+                                    type(row[key][inner_key]), TYPE_STRING
+                                ),
                             }
                         )
 

@@ -29,7 +29,9 @@ class CreateTableError(Exception):
 
 
 def extract_query_params(query):
-    return re.findall(r"(?:join|from)\s+param_query_(\d+)_{([^}]+)}", query, re.IGNORECASE)
+    return re.findall(
+        r"(?:join|from)\s+param_query_(\d+)_{([^}]+)}", query, re.IGNORECASE
+    )
 
 
 def extract_query_ids(query):
@@ -82,7 +84,9 @@ def get_query_results(user, query_id, bring_from_cache, params=None):
     return results
 
 
-def create_tables_from_query_ids(user, connection, query_ids, query_params, cached_query_ids=[]):
+def create_tables_from_query_ids(
+    user, connection, query_ids, query_params, cached_query_ids=[]
+):
     for query_id in set(cached_query_ids):
         results = get_query_results(user, query_id, True)
         table_name = "cached_query_{query_id}".format(query_id=query_id)
@@ -90,8 +94,12 @@ def create_tables_from_query_ids(user, connection, query_ids, query_params, cach
 
     for query in set(query_params):
         results = get_query_results(user, query[0], False, query[1])
-        table_hash = hashlib.md5("query_{query}_{hash}".format(query=query[0], hash=query[1]).encode()).hexdigest()
-        table_name = "query_{query_id}_{param_hash}".format(query_id=query[0], param_hash=table_hash)
+        table_hash = hashlib.md5(
+            "query_{query}_{hash}".format(query=query[0], hash=query[1]).encode()
+        ).hexdigest()
+        table_name = "query_{query_id}_{param_hash}".format(
+            query_id=query[0], param_hash=table_hash
+        )
         create_table(connection, table_name, results)
 
     for query_id in set(query_ids):
@@ -127,12 +135,16 @@ def create_table(connection, table_name, query_results):
         logger.debug("CREATE TABLE query: %s", create_table)
         connection.execute(create_table)
     except sqlite3.OperationalError as exc:
-        raise CreateTableError("Error creating table {}: {}".format(table_name, str(exc)))
+        raise CreateTableError(
+            "Error creating table {}: {}".format(table_name, str(exc))
+        )
 
-    insert_template = "insert into {table_name} ({column_list}) values ({place_holders})".format(
-        table_name=table_name,
-        column_list=column_list,
-        place_holders=",".join(["?"] * len(columns)),
+    insert_template = (
+        "insert into {table_name} ({column_list}) values ({place_holders})".format(
+            table_name=table_name,
+            column_list=column_list,
+            place_holders=",".join(["?"] * len(columns)),
+        )
     )
 
     for row in query_results["rows"]:
@@ -142,9 +154,15 @@ def create_table(connection, table_name, query_results):
 
 def prepare_parameterized_query(query, query_params):
     for params in query_params:
-        table_hash = hashlib.md5("query_{query}_{hash}".format(query=params[0], hash=params[1]).encode()).hexdigest()
-        key = "param_query_{query_id}_{{{param_string}}}".format(query_id=params[0], param_string=params[1])
-        value = "query_{query_id}_{param_hash}".format(query_id=params[0], param_hash=table_hash)
+        table_hash = hashlib.md5(
+            "query_{query}_{hash}".format(query=params[0], hash=params[1]).encode()
+        ).hexdigest()
+        key = "param_query_{query_id}_{{{param_string}}}".format(
+            query_id=params[0], param_string=params[1]
+        )
+        value = "query_{query_id}_{param_hash}".format(
+            query_id=params[0], param_hash=table_hash
+        )
         query = query.replace(key, value)
     return query
 
@@ -169,7 +187,9 @@ class Results(BaseQueryRunner):
         query_params = extract_query_params(query)
 
         cached_query_ids = extract_cached_query_ids(query)
-        create_tables_from_query_ids(user, connection, query_ids, query_params, cached_query_ids)
+        create_tables_from_query_ids(
+            user, connection, query_ids, query_params, cached_query_ids
+        )
 
         cursor = connection.cursor()
 

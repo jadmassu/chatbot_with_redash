@@ -18,26 +18,36 @@ from redash.serializers import serialize_alert
 
 class AlertResource(BaseResource):
     def get(self, alert_id):
-        alert = get_object_or_404(models.Alert.get_by_id_and_org, alert_id, self.current_org)
+        alert = get_object_or_404(
+            models.Alert.get_by_id_and_org, alert_id, self.current_org
+        )
         require_access(alert, self.current_user, view_only)
-        self.record_event({"action": "view", "object_id": alert.id, "object_type": "alert"})
+        self.record_event(
+            {"action": "view", "object_id": alert.id, "object_type": "alert"}
+        )
         return serialize_alert(alert)
 
     def post(self, alert_id):
         req = request.get_json(True)
         params = project(req, ("options", "name", "query_id", "rearm"))
-        alert = get_object_or_404(models.Alert.get_by_id_and_org, alert_id, self.current_org)
+        alert = get_object_or_404(
+            models.Alert.get_by_id_and_org, alert_id, self.current_org
+        )
         require_admin_or_owner(alert.user.id)
 
         self.update_model(alert, params)
         models.db.session.commit()
 
-        self.record_event({"action": "edit", "object_id": alert.id, "object_type": "alert"})
+        self.record_event(
+            {"action": "edit", "object_id": alert.id, "object_type": "alert"}
+        )
 
         return serialize_alert(alert)
 
     def delete(self, alert_id):
-        alert = get_object_or_404(models.Alert.get_by_id_and_org, alert_id, self.current_org)
+        alert = get_object_or_404(
+            models.Alert.get_by_id_and_org, alert_id, self.current_org
+        )
         require_admin_or_owner(alert.user_id)
         models.db.session.delete(alert)
         models.db.session.commit()
@@ -45,22 +55,30 @@ class AlertResource(BaseResource):
 
 class AlertMuteResource(BaseResource):
     def post(self, alert_id):
-        alert = get_object_or_404(models.Alert.get_by_id_and_org, alert_id, self.current_org)
+        alert = get_object_or_404(
+            models.Alert.get_by_id_and_org, alert_id, self.current_org
+        )
         require_admin_or_owner(alert.user.id)
 
         alert.options["muted"] = True
         models.db.session.commit()
 
-        self.record_event({"action": "mute", "object_id": alert.id, "object_type": "alert"})
+        self.record_event(
+            {"action": "mute", "object_id": alert.id, "object_type": "alert"}
+        )
 
     def delete(self, alert_id):
-        alert = get_object_or_404(models.Alert.get_by_id_and_org, alert_id, self.current_org)
+        alert = get_object_or_404(
+            models.Alert.get_by_id_and_org, alert_id, self.current_org
+        )
         require_admin_or_owner(alert.user.id)
 
         alert.options["muted"] = False
         models.db.session.commit()
 
-        self.record_event({"action": "unmute", "object_id": alert.id, "object_type": "alert"})
+        self.record_event(
+            {"action": "unmute", "object_id": alert.id, "object_type": "alert"}
+        )
 
 
 class AlertListResource(BaseResource):
@@ -83,14 +101,19 @@ class AlertListResource(BaseResource):
         models.db.session.flush()
         models.db.session.commit()
 
-        self.record_event({"action": "create", "object_id": alert.id, "object_type": "alert"})
+        self.record_event(
+            {"action": "create", "object_id": alert.id, "object_type": "alert"}
+        )
 
         return serialize_alert(alert)
 
     @require_permission("list_alerts")
     def get(self):
         self.record_event({"action": "list", "object_type": "alert"})
-        return [serialize_alert(alert) for alert in models.Alert.all(group_ids=self.current_user.group_ids)]
+        return [
+            serialize_alert(alert)
+            for alert in models.Alert.all(group_ids=self.current_user.group_ids)
+        ]
 
 
 class AlertSubscriptionListResource(BaseResource):
@@ -102,7 +125,9 @@ class AlertSubscriptionListResource(BaseResource):
         kwargs = {"alert": alert, "user": self.current_user}
 
         if "destination_id" in req:
-            destination = models.NotificationDestination.get_by_id_and_org(req["destination_id"], self.current_org)
+            destination = models.NotificationDestination.get_by_id_and_org(
+                req["destination_id"], self.current_org
+            )
             kwargs["destination"] = destination
 
         subscription = models.AlertSubscription(**kwargs)
@@ -136,4 +161,6 @@ class AlertSubscriptionResource(BaseResource):
         models.db.session.delete(subscription)
         models.db.session.commit()
 
-        self.record_event({"action": "unsubscribe", "object_id": alert_id, "object_type": "alert"})
+        self.record_event(
+            {"action": "unsubscribe", "object_id": alert_id, "object_type": "alert"}
+        )

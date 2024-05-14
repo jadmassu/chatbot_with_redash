@@ -130,13 +130,30 @@ class Prometheus(BaseQueryRunner):
                     "title": "Verify SSL (Ignored, if SSL Root Certificate is given)",
                     "default": True,
                 },
-                "cert_File": {"type": "string", "title": "SSL Client Certificate", "default": None},
-                "cert_key_File": {"type": "string", "title": "SSL Client Key", "default": None},
-                "ca_cert_File": {"type": "string", "title": "SSL Root Certificate", "default": None},
+                "cert_File": {
+                    "type": "string",
+                    "title": "SSL Client Certificate",
+                    "default": None,
+                },
+                "cert_key_File": {
+                    "type": "string",
+                    "title": "SSL Client Key",
+                    "default": None,
+                },
+                "ca_cert_File": {
+                    "type": "string",
+                    "title": "SSL Root Certificate",
+                    "default": None,
+                },
             },
             "required": ["url"],
             "secret": ["cert_File", "cert_key_File", "ca_cert_File"],
-            "extra_options": ["verify_ssl", "cert_File", "cert_key_File", "ca_cert_File"],
+            "extra_options": [
+                "verify_ssl",
+                "cert_File",
+                "cert_key_File",
+                "ca_cert_File",
+            ],
         }
 
     def test_connection(self):
@@ -144,7 +161,9 @@ class Prometheus(BaseQueryRunner):
         promehteus_kwargs = {}
         try:
             promehteus_kwargs = self._get_prometheus_kwargs()
-            resp = requests.get(self.configuration.get("url", None), **promehteus_kwargs)
+            resp = requests.get(
+                self.configuration.get("url", None), **promehteus_kwargs
+            )
             result = resp.ok
         except Exception:
             raise
@@ -206,13 +225,17 @@ class Prometheus(BaseQueryRunner):
             error = None
             query = query.strip()
             # for backward compatibility
-            query = "query={}".format(query) if not query.startswith("query=") else query
+            query = (
+                "query={}".format(query) if not query.startswith("query=") else query
+            )
 
             payload = parse_qs(query)
             query_type = "query_range" if "step" in payload.keys() else "query"
 
             # for the range of until now
-            if query_type == "query_range" and ("end" not in payload.keys() or "now" in payload["end"]):
+            if query_type == "query_range" and (
+                "end" not in payload.keys() or "now" in payload["end"]
+            ):
                 date_now = self._get_datetime_now()
                 payload.update({"end": [date_now]})
 

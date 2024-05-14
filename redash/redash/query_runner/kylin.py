@@ -136,7 +136,9 @@ class Kylin(BaseQueryRunner):
         )
 
     def get_rows(self, columns, results):
-        return [dict(zip((column["name"] for column in columns), row)) for row in results]
+        return [
+            dict(zip((column["name"] for column in columns), row)) for row in results
+        ]
 
     def get_table_schema(self, table):
         name = table["table_NAME"]

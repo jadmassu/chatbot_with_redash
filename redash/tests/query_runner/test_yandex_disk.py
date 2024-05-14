@@ -24,7 +24,9 @@ if enabled:
 import pytest
 
 test_token = "AAAAQAA"
-skip_condition = pytest.mark.skipif(not enabled, reason="pandas and/or openpyxl are not installed")
+skip_condition = pytest.mark.skipif(
+    not enabled, reason="pandas and/or openpyxl are not installed"
+)
 
 
 @pytest.fixture
@@ -59,7 +61,10 @@ def test__send_query(mock_requests_get):
 @skip_condition
 @pytest.mark.parametrize(
     "configuration, error_message",
-    [({"token": test_token}, None), ({"token": ""}, "Code: 400, message: Unauthorized")],
+    [
+        ({"token": test_token}, None),
+        ({"token": ""}, "Code: 400, message: Unauthorized"),
+    ],
 )
 @mock.patch("requests.get")
 def test_test_connection(mock_requests_get, configuration, error_message):
@@ -128,8 +133,12 @@ def test_run_query(mocked_requests, mock_yandex_disk):
         ],
     }
 
-    with mock.patch.dict("redash.query_runner.yandex_disk.EXTENSIONS_READERS", mock_readers, clear=True):
-        data, error = mock_yandex_disk.run_query(yaml.dump({"path": "/tmp/file.csv"}), "user")
+    with mock.patch.dict(
+        "redash.query_runner.yandex_disk.EXTENSIONS_READERS", mock_readers, clear=True
+    ):
+        data, error = mock_yandex_disk.run_query(
+            yaml.dump({"path": "/tmp/file.csv"}), "user"
+        )
 
     assert error is None
     assert data == expected_data
@@ -172,11 +181,19 @@ def test_run_query_unsupported_extension(mock_yandex_disk):
 
 @skip_condition
 def test_run_query_read_file_error(mock_yandex_disk):
-    mock_yandex_disk._send_query = mock.MagicMock(return_value={"href": "test_file.csv"})
-    mock_yandex_disk._get_tables = mock.MagicMock(return_value=[{"name": "test_file.csv", "columns": []}])
-    mock_yandex_disk._read_file = mock.MagicMock(side_effect=Exception("Read file error"))
+    mock_yandex_disk._send_query = mock.MagicMock(
+        return_value={"href": "test_file.csv"}
+    )
+    mock_yandex_disk._get_tables = mock.MagicMock(
+        return_value=[{"name": "test_file.csv", "columns": []}]
+    )
+    mock_yandex_disk._read_file = mock.MagicMock(
+        side_effect=Exception("Read file error")
+    )
 
-    data, error = mock_yandex_disk.run_query(yaml.dump({"path": "/tmp/file.csv"}), "user")
+    data, error = mock_yandex_disk.run_query(
+        yaml.dump({"path": "/tmp/file.csv"}), "user"
+    )
     assert data is None
     assert error is not None and error.startswith("Read file error")
 
@@ -197,7 +214,9 @@ def test_run_query_multiple_sheets(mocked_requests, mock_yandex_disk):
     mock_readers = EXTENSIONS_READERS.copy()
     mock_readers["xlsx"] = mock_ext_readers_return_multiple_sheets
 
-    with mock.patch.dict("redash.query_runner.yandex_disk.EXTENSIONS_READERS", mock_readers, clear=True):
+    with mock.patch.dict(
+        "redash.query_runner.yandex_disk.EXTENSIONS_READERS", mock_readers, clear=True
+    ):
         data, error = mock_yandex_disk.run_query(query, "user")
 
     assert error is None

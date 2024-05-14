@@ -154,7 +154,9 @@ destination_factory = ModelFactory(
     user=user_factory.create,
     name=Sequence("Destination {}"),
     type="slack",
-    options=lambda: ConfigurationContainer.from_json('{"url": "https://www.slack.com"}'),
+    options=lambda: ConfigurationContainer.from_json(
+        '{"url": "https://www.slack.com"}'
+    ),
 )
 
 alert_subscription_factory = ModelFactory(
@@ -191,13 +193,19 @@ class Factory:
     def data_source(self):
         if self._data_source is None:
             self._data_source = data_source_factory.create(org=self.org)
-            db.session.add(redash.models.DataSourceGroup(group=self.default_group, data_source=self._data_source))
+            db.session.add(
+                redash.models.DataSourceGroup(
+                    group=self.default_group, data_source=self._data_source
+                )
+            )
 
         return self._data_source
 
     def create_org(self, **kwargs):
         org = org_factory.create(**kwargs)
-        self.create_group(org=org, type=redash.models.Group.BUILTIN_GROUP, name="default")
+        self.create_group(
+            org=org, type=redash.models.Group.BUILTIN_GROUP, name="default"
+        )
         self.create_group(
             org=org,
             type=redash.models.Group.BUILTIN_GROUP,
@@ -265,7 +273,11 @@ class Factory:
         data_source = data_source_factory.create(**args)
 
         if group:
-            db.session.add(redash.models.DataSourceGroup(group=group, data_source=data_source, view_only=view_only))
+            db.session.add(
+                redash.models.DataSourceGroup(
+                    group=group, data_source=data_source, view_only=view_only
+                )
+            )
 
         return data_source
 

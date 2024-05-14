@@ -51,7 +51,9 @@ class ObjectPermissionsListResource(BaseResource):
         except NoResultFound:
             abort(400, message="User not found.")
 
-        permission = AccessPermission.grant(obj, access_type, grantee, self.current_user)
+        permission = AccessPermission.grant(
+            obj, access_type, grantee, self.current_user
+        )
         db.session.commit()
 
         self.record_event(

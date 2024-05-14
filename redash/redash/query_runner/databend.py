@@ -74,13 +74,19 @@ class Databend(BaseQueryRunner):
         password = self.configuration.get("password") or ""
         database = self.configuration.get("database") or "default"
         secure = self.configuration.get("secure") or False
-        connection = connector.connect(f"databend://{username}:{password}@{host}:{port}/{database}?secure={secure}")
+        connection = connector.connect(
+            f"databend://{username}:{password}@{host}:{port}/{database}?secure={secure}"
+        )
         cursor = connection.cursor()
 
         try:
             cursor.execute(query)
-            columns = self.fetch_columns([(i[0], self._define_column_type(i[1])) for i in cursor.description])
-            rows = [dict(zip((column["name"] for column in columns), row)) for row in cursor]
+            columns = self.fetch_columns(
+                [(i[0], self._define_column_type(i[1])) for i in cursor.description]
+            )
+            rows = [
+                dict(zip((column["name"] for column in columns), row)) for row in cursor
+            ]
 
             data = {"columns": columns, "rows": rows}
             error = None

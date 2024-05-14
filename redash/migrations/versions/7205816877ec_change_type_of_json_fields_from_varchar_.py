@@ -11,125 +11,185 @@ from sqlalchemy.dialects.postgresql import JSONB, JSON
 
 
 # revision identifiers, used by Alembic.
-revision = '7205816877ec'
-down_revision = '7ce5925f832b'
+revision = "7205816877ec"
+down_revision = "7ce5925f832b"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
     connection = op.get_bind()
-    op.alter_column('queries', 'options',
+    op.alter_column(
+        "queries",
+        "options",
         existing_type=sa.Text(),
         type_=JSONB(astext_type=sa.Text()),
         nullable=True,
-        postgresql_using='options::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
-    op.alter_column('queries', 'schedule',
+        postgresql_using="options::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
+    op.alter_column(
+        "queries",
+        "schedule",
         existing_type=sa.Text(),
         type_=JSONB(astext_type=sa.Text()),
         nullable=True,
-        postgresql_using='schedule::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
-    op.alter_column('events', 'additional_properties',
+        postgresql_using="schedule::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
+    op.alter_column(
+        "events",
+        "additional_properties",
         existing_type=sa.Text(),
         type_=JSONB(astext_type=sa.Text()),
         nullable=True,
-        postgresql_using='additional_properties::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
-    op.alter_column('organizations', 'settings',
+        postgresql_using="additional_properties::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
+    op.alter_column(
+        "organizations",
+        "settings",
         existing_type=sa.Text(),
         type_=JSONB(astext_type=sa.Text()),
         nullable=True,
-        postgresql_using='settings::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
-    op.alter_column('alerts', 'options',
+        postgresql_using="settings::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
+    op.alter_column(
+        "alerts",
+        "options",
         existing_type=JSON(astext_type=sa.Text()),
         type_=JSONB(astext_type=sa.Text()),
         nullable=True,
-        postgresql_using='options::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
-    op.alter_column('dashboards', 'options',
+        postgresql_using="options::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
+    op.alter_column(
+        "dashboards",
+        "options",
         existing_type=JSON(astext_type=sa.Text()),
         type_=JSONB(astext_type=sa.Text()),
-        postgresql_using='options::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
-    op.alter_column('dashboards', 'layout',
+        postgresql_using="options::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
+    op.alter_column(
+        "dashboards",
+        "layout",
         existing_type=sa.Text(),
         type_=JSONB(astext_type=sa.Text()),
-        postgresql_using='layout::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
-    op.alter_column('changes', 'change',
+        postgresql_using="layout::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
+    op.alter_column(
+        "changes",
+        "change",
         existing_type=JSON(astext_type=sa.Text()),
         type_=JSONB(astext_type=sa.Text()),
-        postgresql_using='change::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
-    op.alter_column('visualizations', 'options',
+        postgresql_using="change::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
+    op.alter_column(
+        "visualizations",
+        "options",
         existing_type=sa.Text(),
         type_=JSONB(astext_type=sa.Text()),
-        postgresql_using='options::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
-    op.alter_column('widgets', 'options',
+        postgresql_using="options::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
+    op.alter_column(
+        "widgets",
+        "options",
         existing_type=sa.Text(),
         type_=JSONB(astext_type=sa.Text()),
-        postgresql_using='options::jsonb',
-        server_default=sa.text("'{}'::jsonb"))
+        postgresql_using="options::jsonb",
+        server_default=sa.text("'{}'::jsonb"),
+    )
 
 
 def downgrade():
     connection = op.get_bind()
-    op.alter_column('queries', 'options',
+    op.alter_column(
+        "queries",
+        "options",
         existing_type=JSONB(astext_type=sa.Text()),
         type_=sa.Text(),
-        postgresql_using='options::text',
+        postgresql_using="options::text",
         existing_nullable=True,
-        server_default=sa.text("'{}'::text"))
-    op.alter_column('queries', 'schedule',
+        server_default=sa.text("'{}'::text"),
+    )
+    op.alter_column(
+        "queries",
+        "schedule",
         existing_type=JSONB(astext_type=sa.Text()),
         type_=sa.Text(),
-        postgresql_using='schedule::text',
+        postgresql_using="schedule::text",
         existing_nullable=True,
-        server_default=sa.text("'{}'::text"))
-    op.alter_column('events', 'additional_properties',
+        server_default=sa.text("'{}'::text"),
+    )
+    op.alter_column(
+        "events",
+        "additional_properties",
         existing_type=JSONB(astext_type=sa.Text()),
         type_=sa.Text(),
-        postgresql_using='additional_properties::text',
+        postgresql_using="additional_properties::text",
         existing_nullable=True,
-        server_default=sa.text("'{}'::text"))
-    op.alter_column('organizations', 'settings',
+        server_default=sa.text("'{}'::text"),
+    )
+    op.alter_column(
+        "organizations",
+        "settings",
         existing_type=JSONB(astext_type=sa.Text()),
         type_=sa.Text(),
-        postgresql_using='settings::text',
+        postgresql_using="settings::text",
         existing_nullable=True,
-        server_default=sa.text("'{}'::text"))
-    op.alter_column('alerts', 'options',
+        server_default=sa.text("'{}'::text"),
+    )
+    op.alter_column(
+        "alerts",
+        "options",
         existing_type=JSONB(astext_type=sa.Text()),
         type_=JSON(astext_type=sa.Text()),
-        postgresql_using='options::json',
+        postgresql_using="options::json",
         existing_nullable=True,
-        server_default=sa.text("'{}'::json"))
-    op.alter_column('dashboards', 'options',
+        server_default=sa.text("'{}'::json"),
+    )
+    op.alter_column(
+        "dashboards",
+        "options",
         existing_type=JSONB(astext_type=sa.Text()),
         type_=JSON(astext_type=sa.Text()),
-        postgresql_using='options::json',
-        server_default=sa.text("'{}'::json"))
-    op.alter_column('dashboards', 'layout',
+        postgresql_using="options::json",
+        server_default=sa.text("'{}'::json"),
+    )
+    op.alter_column(
+        "dashboards",
+        "layout",
         existing_type=JSONB(astext_type=sa.Text()),
         type_=sa.Text(),
-        postgresql_using='layout::text',
-        server_default=sa.text("'{}'::text"))
-    op.alter_column('changes', 'change',
+        postgresql_using="layout::text",
+        server_default=sa.text("'{}'::text"),
+    )
+    op.alter_column(
+        "changes",
+        "change",
         existing_type=JSONB(astext_type=sa.Text()),
         type_=JSON(astext_type=sa.Text()),
-        postgresql_using='change::json',
-        server_default=sa.text("'{}'::json"))
-    op.alter_column('visualizations', 'options',
+        postgresql_using="change::json",
+        server_default=sa.text("'{}'::json"),
+    )
+    op.alter_column(
+        "visualizations",
+        "options",
         type_=sa.Text(),
         existing_type=JSONB(astext_type=sa.Text()),
-        postgresql_using='options::text',
-        server_default=sa.text("'{}'::text"))
-    op.alter_column('widgets', 'options',
+        postgresql_using="options::text",
+        server_default=sa.text("'{}'::text"),
+    )
+    op.alter_column(
+        "widgets",
+        "options",
         type_=sa.Text(),
         existing_type=JSONB(astext_type=sa.Text()),
-        postgresql_using='options::text',
-        server_default=sa.text("'{}'::text"))
+        postgresql_using="options::text",
+        server_default=sa.text("'{}'::text"),
+    )

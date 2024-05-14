@@ -56,7 +56,9 @@ def parse_ga_response(response):
         d = {}
         for c, value in enumerate(r):
             column_name = response["columnHeaders"][c]["name"]
-            column_type = [col for col in columns if col["name"] == column_name][0]["type"]
+            column_type = [col for col in columns if col["name"] == column_name][0][
+                "type"
+            ]
 
             # mcf results come a bit different than ga results:
             if isinstance(value, dict):
@@ -65,7 +67,9 @@ def parse_ga_response(response):
                 elif "conversionPathValue" in value:
                     steps = []
                     for step in value["conversionPathValue"]:
-                        steps.append("{}:{}".format(step["interactionType"], step["nodeValue"]))
+                        steps.append(
+                            "{}:{}".format(step["interactionType"], step["nodeValue"])
+                        )
                     value = ", ".join(steps)
                 else:
                     raise Exception("Results format not supported")
@@ -78,7 +82,9 @@ def parse_ga_response(response):
                 elif len(value) == 12:
                     value = datetime.strptime(value, "%Y%m%d%H%M")
                 else:
-                    raise Exception("Unknown date/time format in results: '{}'".format(value))
+                    raise Exception(
+                        "Unknown date/time format in results: '{}'".format(value)
+                    )
 
             d[column_name] = value
         rows.append(d)
@@ -105,7 +111,12 @@ class GoogleAnalytics(BaseSQLQueryRunner):
     def configuration_schema(cls):
         return {
             "type": "object",
-            "properties": {"jsonKeyFile": {"type": "string", "title": "JSON Key File (ADC is used if omitted)"}},
+            "properties": {
+                "jsonKeyFile": {
+                    "type": "string",
+                    "title": "JSON Key File (ADC is used if omitted)",
+                }
+            },
             "required": [],
             "secret": ["jsonKeyFile"],
         }
@@ -126,7 +137,14 @@ class GoogleAnalytics(BaseSQLQueryRunner):
         return build("analytics", "v3", credentials=creds)
 
     def _get_tables(self, schema):
-        accounts = self._get_analytics_service().management().accounts().list().execute().get("items")
+        accounts = (
+            self._get_analytics_service()
+            .management()
+            .accounts()
+            .list()
+            .execute()
+            .get("items")
+        )
         if accounts is None:
             raise Exception("Failed getting accounts.")
         else:
@@ -143,7 +161,9 @@ class GoogleAnalytics(BaseSQLQueryRunner):
                 for property_ in properties:
                     if "defaultProfileId" in property_ and "name" in property_:
                         schema[account["name"]]["columns"].append(
-                            "{0} (ga:{1})".format(property_["name"], property_["defaultProfileId"])
+                            "{0} (ga:{1})".format(
+                                property_["name"], property_["defaultProfileId"]
+                            )
                         )
 
         return list(schema.values())
@@ -167,7 +187,9 @@ class GoogleAnalytics(BaseSQLQueryRunner):
         if "mcf:" in params["metrics"] and "ga:" in params["metrics"]:
             raise Exception("Can't mix mcf: and ga: metrics.")
 
-        if "mcf:" in params.get("dimensions", "") and "ga:" in params.get("dimensions", ""):
+        if "mcf:" in params.get("dimensions", "") and "ga:" in params.get(
+            "dimensions", ""
+        ):
             raise Exception("Can't mix mcf: and ga: dimensions.")
 
         if "mcf:" in params["metrics"]:

@@ -79,7 +79,11 @@ class Netezza(BaseSQLQueryRunner):
                 "password": {"type": "string"},
                 "host": {"type": "string", "default": "127.0.0.1"},
                 "port": {"type": "number", "default": 5480},
-                "database": {"type": "string", "title": "Database Name", "default": "system"},
+                "database": {
+                    "type": "string",
+                    "title": "Database Name",
+                    "default": "system",
+                },
             },
             "order": ["host", "port", "user", "password", "database"],
             "required": ["user", "password", "database"],
@@ -124,7 +128,9 @@ class Netezza(BaseSQLQueryRunner):
             for table_name, column_name, data_type in cursor:
                 if table_name not in schema:
                     schema[table_name] = {"name": table_name, "columns": []}
-                schema[table_name]["columns"].append({"name": column_name, "type": data_type})
+                schema[table_name]["columns"].append(
+                    {"name": column_name, "type": data_type}
+                )
             return list(schema.values())
 
     @classmethod
@@ -144,7 +150,11 @@ class Netezza(BaseSQLQueryRunner):
         if typid == nzpy.core.NzTypeInt2:
             return TYPE_STRING if "text" in func.__name__ else typ
 
-        if typid in (nzpy.core.NzTypeVarFixedChar, nzpy.core.NzTypeVarBinary, nzpy.core.NzTypeNVarChar):
+        if typid in (
+            nzpy.core.NzTypeVarFixedChar,
+            nzpy.core.NzTypeVarBinary,
+            nzpy.core.NzTypeNVarChar,
+        ):
             return TYPE_INTEGER if "int" in func.__name__ else typ
         return typ
 
@@ -158,11 +168,17 @@ class Netezza(BaseSQLQueryRunner):
                 else:
                     columns = self.fetch_columns(
                         [
-                            (val[0], self.type_map(val[1], cursor.ps["row_desc"][i]["func"]))
+                            (
+                                val[0],
+                                self.type_map(val[1], cursor.ps["row_desc"][i]["func"]),
+                            )
                             for i, val in enumerate(cursor.description)
                         ]
                     )
-                rows = [dict(zip((column["name"] for column in columns), row)) for row in cursor]
+                rows = [
+                    dict(zip((column["name"] for column in columns), row))
+                    for row in cursor
+                ]
 
                 data = {"columns": columns, "rows": rows}
         except Exception:

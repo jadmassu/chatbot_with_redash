@@ -41,7 +41,9 @@ order_map = {
     "-groups": "-group_ids",
 }
 
-order_results = partial(_order_results, default_order="-created_at", allowed_orders=order_map)
+order_results = partial(
+    _order_results, default_order="-created_at", allowed_orders=order_map
+)
 
 
 def invite_user(org, inviter, user, send_email=True):
@@ -65,7 +67,9 @@ def require_allowed_email(email):
 
 
 class UserListResource(BaseResource):
-    decorators = BaseResource.decorators + [limiter.limit("200/day;50/hour", methods=["POST"])]
+    decorators = BaseResource.decorators + [
+        limiter.limit("200/day;50/hour", methods=["POST"])
+    ]
 
     def get_users(self, disabled, pending, search_term):
         if disabled:
@@ -87,7 +91,9 @@ class UserListResource(BaseResource):
                 }
             )
         else:
-            self.record_event({"action": "list", "object_type": "user", "pending": pending})
+            self.record_event(
+                {"action": "list", "object_type": "user", "pending": pending}
+            )
 
         # order results according to passed order parameter,
         # special-casing search queries where the database
@@ -119,7 +125,9 @@ class UserListResource(BaseResource):
         disabled = request.args.get("disabled", "false")  # get enabled users by default
         disabled = parse_boolean(disabled)
 
-        pending = request.args.get("pending", None)  # get both active and pending by default
+        pending = request.args.get(
+            "pending", None
+        )  # get both active and pending by default
         if pending is not None:
             pending = parse_boolean(pending)
 
@@ -152,10 +160,14 @@ class UserListResource(BaseResource):
                 abort(400, message="Email already taken.")
             abort(500)
 
-        self.record_event({"action": "create", "object_id": user.id, "object_type": "user"})
+        self.record_event(
+            {"action": "create", "object_id": user.id, "object_type": "user"}
+        )
 
         should_send_invitation = "no_invite" not in request.args
-        return invite_user(self.current_org, self.current_user, user, send_email=should_send_invitation)
+        return invite_user(
+            self.current_org, self.current_user, user, send_email=should_send_invitation
+        )
 
 
 class UserInviteResource(BaseResource):
@@ -187,7 +199,9 @@ class UserRegenerateApiKeyResource(BaseResource):
         user.regenerate_api_key()
         models.db.session.commit()
 
-        self.record_event({"action": "regnerate_api_key", "object_id": user.id, "object_type": "user"})
+        self.record_event(
+            {"action": "regnerate_api_key", "object_id": user.id, "object_type": "user"}
+        )
 
         return user.to_dict(with_api_key=True)
 
@@ -197,9 +211,13 @@ class UserResource(BaseResource):
 
     def get(self, user_id):
         require_permission_or_owner("list_users", user_id)
-        user = get_object_or_404(models.User.get_by_id_and_org, user_id, self.current_org)
+        user = get_object_or_404(
+            models.User.get_by_id_and_org, user_id, self.current_org
+        )
 
-        self.record_event({"action": "view", "object_id": user_id, "object_type": "user"})
+        self.record_event(
+            {"action": "view", "object_id": user_id, "object_type": "user"}
+        )
 
         return user.to_dict(with_api_key=is_admin_or_owner(user_id))
 
@@ -209,12 +227,16 @@ class UserResource(BaseResource):
 
         req = request.get_json(True)
 
-        params = project(req, ("email", "name", "password", "old_password", "group_ids"))
+        params = project(
+            req, ("email", "name", "password", "old_password", "group_ids")
+        )
 
         if "password" in params and "old_password" not in params:
             abort(403, message="Must provide current password to update password.")
 
-        if "old_password" in params and not user.verify_password(params["old_password"]):
+        if "old_password" in params and not user.verify_password(
+            params["old_password"]
+        ):
             abort(403, message="Incorrect current password.")
 
         if "password" in params:
@@ -238,7 +260,9 @@ class UserResource(BaseResource):
             require_allowed_email(params["email"])
 
         email_address_changed = "email" in params and params["email"] != user.email
-        needs_to_verify_email = email_address_changed and settings.email_server_is_configured()
+        needs_to_verify_email = (
+            email_address_changed and settings.email_server_is_configured()
+        )
         if needs_to_verify_email:
             user.is_email_verified = False
 

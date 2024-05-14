@@ -77,10 +77,13 @@ class TreasureData(BaseQueryRunner):
         if self.configuration.get("get_schema", False):
             try:
                 with tdclient.Client(
-                    self.configuration.get("apikey"), endpoint=self.configuration.get("endpoint")
+                    self.configuration.get("apikey"),
+                    endpoint=self.configuration.get("endpoint"),
                 ) as client:
                     for table in client.tables(self.configuration.get("db")):
-                        table_name = "{}.{}".format(self.configuration.get("db"), table.name)
+                        table_name = "{}.{}".format(
+                            self.configuration.get("db"), table.name
+                        )
                         for table_schema in table.schema:
                             schema[table_name] = {
                                 "name": table_name,
@@ -102,21 +105,27 @@ class TreasureData(BaseQueryRunner):
         try:
             cursor.execute(query)
             columns_tuples = [
-                (i[0], TD_TYPES_MAPPING.get(i[1], None)) for i in cursor.show_job()["hive_result_schema"]
+                (i[0], TD_TYPES_MAPPING.get(i[1], None))
+                for i in cursor.show_job()["hive_result_schema"]
             ]
             columns = self.fetch_columns(columns_tuples)
 
             if cursor.rowcount == 0:
                 rows = []
             else:
-                rows = [dict(zip(([column["name"] for column in columns]), r)) for r in cursor.fetchall()]
+                rows = [
+                    dict(zip(([column["name"] for column in columns]), r))
+                    for r in cursor.fetchall()
+                ]
             data = {"columns": columns, "rows": rows}
             error = None
         except errors.InternalError as e:
             data = None
             error = "%s: %s" % (
                 str(e),
-                cursor.show_job().get("debug", {}).get("stderr", "No stderr message in the response"),
+                cursor.show_job()
+                .get("debug", {})
+                .get("stderr", "No stderr message in the response"),
             )
         return data, error
 

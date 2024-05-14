@@ -22,7 +22,9 @@ def login(org_slug=None):
     next_path = get_next_path(unsafe_next_path)
 
     if not settings.REMOTE_USER_LOGIN_ENABLED:
-        logger.error("Cannot use remote user for login without being enabled in settings")
+        logger.error(
+            "Cannot use remote user for login without being enabled in settings"
+        )
         return redirect(url_for("redash.index", next=next_path, org_slug=org_slug))
 
     email = request.headers.get(settings.REMOTE_USER_HEADER)

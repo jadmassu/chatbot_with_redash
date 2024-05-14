@@ -53,8 +53,12 @@ class Druid(BaseQueryRunner):
 
         try:
             cursor.execute(query)
-            columns = self.fetch_columns([(i[0], TYPES_MAP.get(i[1], None)) for i in cursor.description])
-            rows = [dict(zip((column["name"] for column in columns), row)) for row in cursor]
+            columns = self.fetch_columns(
+                [(i[0], TYPES_MAP.get(i[1], None)) for i in cursor.description]
+            )
+            rows = [
+                dict(zip((column["name"] for column in columns), row)) for row in cursor
+            ]
 
             data = {"columns": columns, "rows": rows}
             error = None

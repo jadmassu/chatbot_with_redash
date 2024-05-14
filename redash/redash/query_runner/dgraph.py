@@ -104,7 +104,9 @@ class Dgraph(BaseQueryRunner):
 
             header = list(set(header))
 
-            columns = [{"name": c, "friendly_name": c, "type": "string"} for c in header]
+            columns = [
+                {"name": c, "friendly_name": c, "type": "string"} for c in header
+            ]
 
             # finally, assemble both the columns and data
             data = {"columns": columns, "rows": processed_data}

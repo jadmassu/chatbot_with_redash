@@ -62,7 +62,9 @@ class BigQueryGCE(BigQuery):
         google.auth.default()[1]
 
     def _get_bigquery_service(self):
-        creds = google.auth.default(scopes=["https://www.googleapis.com/auth/bigquery"])[0]
+        creds = google.auth.default(
+            scopes=["https://www.googleapis.com/auth/bigquery"]
+        )[0]
         return build("bigquery", "v2", credentials=creds, cache_discovery=False)
 
 

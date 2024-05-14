@@ -113,7 +113,13 @@ class TestCreateTable(TestCase):
         connection = sqlite3.connect(":memory:")
         results = {
             "columns": [{"name": "test1"}, {"name": "test2"}, {"name": "test3"}],
-            "rows": [{"test1": 1, "test2": decimal.Decimal(2), "test3": datetime.timedelta(seconds=3)}],
+            "rows": [
+                {
+                    "test1": 1,
+                    "test2": decimal.Decimal(2),
+                    "test3": datetime.timedelta(seconds=3),
+                }
+            ],
         }
         table_name = "query_123"
         create_table(connection, table_name, results)
@@ -166,7 +172,9 @@ class TestGetQuery(BaseTestCase):
         self.assertEqual(query, loaded)
 
     def test_returns_query_when_user_has_view_only_access(self):
-        ds = self.factory.create_data_source(group=self.factory.org.default_group, view_only=True)
+        ds = self.factory.create_data_source(
+            group=self.factory.org.default_group, view_only=True
+        )
         query = self.factory.create_query(data_source=ds)
         user = self.factory.create_user()
 
@@ -211,18 +219,27 @@ class TestExtractParamQueryIds(TestCase):
 
     def test_finds_queries_in_joins(self):
         query = "SELECT * FROM param_query_123_{token1=test1} JOIN param_query_456_{token2=test2}"
-        self.assertEqual([("123", "token1=test1"), ("456", "token2=test2")], extract_query_params(query))
+        self.assertEqual(
+            [("123", "token1=test1"), ("456", "token2=test2")],
+            extract_query_params(query),
+        )
 
 
 class TestPrepareParameterizedQuery(TestCase):
     def test_param_query_replacement(self):
-        result = prepare_parameterized_query("SELECT * FROM param_query_123_{token=test}", [("123", "token=test")])
-        self.assertEqual("SELECT * FROM query_123_1c5f1acad40f99b968836273d74baa89", result)
+        result = prepare_parameterized_query(
+            "SELECT * FROM param_query_123_{token=test}", [("123", "token=test")]
+        )
+        self.assertEqual(
+            "SELECT * FROM query_123_1c5f1acad40f99b968836273d74baa89", result
+        )
 
 
 class TestReplaceQueryParameters(TestCase):
     def test_replace_query_params(self):
-        result = replace_query_parameters("SELECT '{{token1}}', '{{token2}}'", "token1=test1&token2=test2")
+        result = replace_query_parameters(
+            "SELECT '{{token1}}', '{{token2}}'", "token1=test1&token2=test2"
+        )
         self.assertEqual("SELECT 'test1', 'test2'", result)
 
 
@@ -236,7 +253,9 @@ class TestGetQueryResult(BaseTestCase):
         query_result = self.factory.create_query_result()
         query = self.factory.create_query(latest_query_data=query_result)
 
-        self.assertEqual(query_result.data, get_query_results(self.factory.user, query.id, True))
+        self.assertEqual(
+            query_result.data, get_query_results(self.factory.user, query.id, True)
+        )
 
     def test_non_cached_query_result(self):
         query_result = self.factory.create_query_result()
@@ -247,4 +266,6 @@ class TestGetQueryResult(BaseTestCase):
         with mock.patch.object(PostgreSQL, "run_query") as qr:
             query_result_data = {"columns": [], "rows": []}
             qr.return_value = (query_result_data, None)
-            self.assertEqual(query_result_data, get_query_results(self.factory.user, query.id, False))
+            self.assertEqual(
+                query_result_data, get_query_results(self.factory.user, query.id, False)
+            )

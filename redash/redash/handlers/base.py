@@ -15,7 +15,9 @@ from redash.models import db
 from redash.tasks import record_event as record_event_task
 from redash.utils import json_dumps
 
-routes = Blueprint("redash", __name__, template_folder=settings.fix_assets_path("templates"))
+routes = Blueprint(
+    "redash", __name__, template_folder=settings.fix_assets_path("templates")
+)
 
 
 class BaseResource(Resource):

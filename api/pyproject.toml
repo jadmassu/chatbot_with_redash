@@ -16,6 +16,7 @@ langchain-community = "^0.0.38"
 langchain-openai = "^0.1.6"
 
 
+quart-cors = "^0.7.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

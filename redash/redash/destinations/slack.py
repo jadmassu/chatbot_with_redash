@@ -27,12 +27,16 @@ class Slack(BaseDestination):
             {
                 "title": "Query",
                 "type": "mrkdwn",
-                "value": "{host}/queries/{query_id}".format(host=host, query_id=query.id),
+                "value": "{host}/queries/{query_id}".format(
+                    host=host, query_id=query.id
+                ),
             },
             {
                 "title": "Alert",
                 "type": "mrkdwn",
-                "value": "{host}/alerts/{alert_id}".format(host=host, alert_id=alert.id),
+                "value": "{host}/alerts/{alert_id}".format(
+                    host=host, alert_id=alert.id
+                ),
             },
         ]
         if alert.custom_body:
@@ -50,10 +54,18 @@ class Slack(BaseDestination):
         payload = {"attachments": [{"text": text, "color": color, "fields": fields}]}
 
         try:
-            resp = requests.post(options.get("url"), data=json_dumps(payload).encode("utf-8"), timeout=5.0)
+            resp = requests.post(
+                options.get("url"),
+                data=json_dumps(payload).encode("utf-8"),
+                timeout=5.0,
+            )
             logging.warning(resp.text)
             if resp.status_code != 200:
-                logging.error("Slack send ERROR. status_code => {status}".format(status=resp.status_code))
+                logging.error(
+                    "Slack send ERROR. status_code => {status}".format(
+                        status=resp.status_code
+                    )
+                )
         except Exception:
             logging.exception("Slack send ERROR.")
 

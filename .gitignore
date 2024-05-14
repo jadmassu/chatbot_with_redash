@@ -33,7 +33,7 @@ redash/npm-debug.log
 
 redash/client/cypress/screenshots
 redash/client/cypress/videos
-
+.ruff_cache/
 
 
 data

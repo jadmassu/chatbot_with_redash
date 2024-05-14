@@ -43,11 +43,16 @@ def test_test_connection(mock_cursor):
     query = "SELECT 1"
     user = None
     mock_cursor.return_value.fetchall.return_value = [[1]]
-    mock_cursor.return_value.description = [("EXPR$0", "INTEGER", None, None, None, None, True)]
+    mock_cursor.return_value.description = [
+        ("EXPR$0", "INTEGER", None, None, None, None, True)
+    ]
 
     json_data, error = runner.run_query(query, user)
 
-    expected_json_data = {"columns": [{"name": "EXPR$0", "type": TYPE_INTEGER}], "rows": [{"EXPR$0": 1}]}
+    expected_json_data = {
+        "columns": [{"name": "EXPR$0", "type": TYPE_INTEGER}],
+        "rows": [{"EXPR$0": 1}],
+    }
 
     assert json_data == expected_json_data
 

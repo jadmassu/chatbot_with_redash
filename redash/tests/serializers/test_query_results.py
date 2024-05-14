@@ -72,7 +72,9 @@ class DsvSerializationTest(BaseTestCase):
     def test_serializes_tsv_format(self):
         delimiter = "\t"
         with self.app.test_request_context("/"):
-            parsed = csv.DictReader(io.StringIO(self.delimited_content(delimiter)), delimiter=delimiter)
+            parsed = csv.DictReader(
+                io.StringIO(self.delimited_content(delimiter)), delimiter=delimiter
+            )
         rows = list(parsed)
 
         self.assertEqual(rows[0]["datetime"], "26/05/19 12:39")

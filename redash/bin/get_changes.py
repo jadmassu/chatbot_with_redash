@@ -31,7 +31,9 @@ def get_change_log(previous_sha):
         except Exception:
             pull_request = ""
 
-        author = subprocess.check_output(["git", "log", "-1", '--pretty=format:"%an"', parents.split(" ")[-1]])[1:-1]
+        author = subprocess.check_output(
+            ["git", "log", "-1", '--pretty=format:"%an"', parents.split(" ")[-1]]
+        )[1:-1]
 
         changes.append("{}{}: {} ({})".format(sha, pull_request, body.strip(), author))
 

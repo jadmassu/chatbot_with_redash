@@ -46,14 +46,19 @@ class TestTrino(TestCase):
         expected_schema = [
             {
                 "name": f"{TestTrino.catalog_name}.{TestTrino.schema_name}.{TestTrino.table_name}",
-                "columns": [{"name": TestTrino.column_name, "type": TestTrino.column_type}],
+                "columns": [
+                    {"name": TestTrino.column_name, "type": TestTrino.column_type}
+                ],
             }
         ]
         self.assertEqual(schema, expected_schema)
 
     @patch.object(Trino, "run_query")
     def test__get_catalogs(self, mock_run_query):
-        mock_run_query.return_value = ({"rows": [{"Catalog": TestTrino.catalog_name}]}, None)
+        mock_run_query.return_value = (
+            {"rows": [{"Catalog": TestTrino.catalog_name}]},
+            None,
+        )
         runner = Trino({})
         catalogs = runner._get_catalogs()
         expected_catalogs = [TestTrino.catalog_name]

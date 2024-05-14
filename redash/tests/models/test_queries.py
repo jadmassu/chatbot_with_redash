@@ -58,7 +58,9 @@ class QueryTest(BaseTestCase):
         q2 = self.factory.create_query(description="日本語の説明文テスト")
         q3 = self.factory.create_query(description="Testing search")
 
-        queries = Query.search("テスト", [self.factory.default_group.id], multi_byte_search=True)
+        queries = Query.search(
+            "テスト", [self.factory.default_group.id], multi_byte_search=True
+        )
 
         self.assertIn(q1, queries)
         self.assertIn(q2, queries)
@@ -97,7 +99,9 @@ class QueryTest(BaseTestCase):
         self.assertIn(q2, queries)
         self.assertIn(q3, queries)
 
-        queries = list(Query.search("Testing", [other_group.id, self.factory.default_group.id]))
+        queries = list(
+            Query.search("Testing", [other_group.id, self.factory.default_group.id])
+        )
         self.assertIn(q1, queries)
         self.assertIn(q2, queries)
         self.assertIn(q3, queries)
@@ -142,7 +146,9 @@ class QueryTest(BaseTestCase):
         q1 = self.factory.create_query(name="Testing")
         q2 = self.factory.create_query(name="search")
 
-        queries = list(Query.search("testing or search", [self.factory.default_group.id]))
+        queries = list(
+            Query.search("testing or search", [self.factory.default_group.id])
+        )
         self.assertIn(q1, queries)
         self.assertIn(q2, queries)
 
@@ -159,7 +165,9 @@ class QueryTest(BaseTestCase):
         q2 = self.factory.create_query(name="Testing searching")
         q3 = self.factory.create_query(name="Testing finding")
 
-        queries = list(Query.search("testing (search or finding)", [self.factory.default_group.id]))
+        queries = list(
+            Query.search("testing (search or finding)", [self.factory.default_group.id])
+        )
         self.assertIn(q1, queries)
         self.assertIn(q2, queries)
         self.assertIn(q3, queries)
@@ -172,7 +180,9 @@ class QueryTest(BaseTestCase):
         self.assertIn(q1, queries)
         self.assertIn(q2, queries)
 
-    @pytest.mark.skip(reason="sqlalchemy-searchable > 1.0 doesn't support searching for emails")
+    @pytest.mark.skip(
+        reason="sqlalchemy-searchable > 1.0 doesn't support searching for emails"
+    )
     def test_search_query_parser_emails(self):
         q1 = self.factory.create_query(name="janedoe@example.com")
         q2 = self.factory.create_query(name="johndoe@example.com")
@@ -193,8 +203,12 @@ class QueryTest(BaseTestCase):
         query = self.factory.create_query()
         one_day_ago = (utcnow() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
         one_day_later = (utcnow() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-        query1 = self.factory.create_query(schedule={"interval": "3600", "until": one_day_ago})
-        query2 = self.factory.create_query(schedule={"interval": "3600", "until": one_day_later})
+        query1 = self.factory.create_query(
+            schedule={"interval": "3600", "until": one_day_ago}
+        )
+        query2 = self.factory.create_query(
+            schedule={"interval": "3600", "until": one_day_later}
+        )
         oq = staticmethod(lambda: [query1, query2])
         with mock.patch.object(query.query.filter(), "order_by", oq):
             res = query.past_scheduled_queries()
@@ -292,12 +306,16 @@ class QueryRecentTest(BaseTestCase):
             object_id=q1.id,
         )
         db.session.add(e)
-        recent = Query.recent([self.factory.default_group.id], user_id=self.factory.user.id)
+        recent = Query.recent(
+            [self.factory.default_group.id], user_id=self.factory.user.id
+        )
 
         self.assertIn(q1, recent)
         self.assertNotIn(q2, recent)
 
-        recent = Query.recent([self.factory.default_group.id], user_id=self.factory.user.id + 1)
+        recent = Query.recent(
+            [self.factory.default_group.id], user_id=self.factory.user.id + 1
+        )
         self.assertNotIn(q1, recent)
         self.assertNotIn(q2, recent)
 
@@ -350,7 +368,11 @@ class TestQueryByUser(BaseTestCase):
 
     def test_returns_only_queries_from_groups_the_user_is_member_in(self):
         q = self.factory.create_query()
-        q2 = self.factory.create_query(data_source=self.factory.create_data_source(group=self.factory.create_group()))
+        q2 = self.factory.create_query(
+            data_source=self.factory.create_data_source(
+                group=self.factory.create_group()
+            )
+        )
 
         queries = Query.by_user(self.factory.user)
 
@@ -370,10 +392,14 @@ class TestQueryFork(BaseTestCase):
     def test_fork_with_visualizations(self):
         # prepare original query and visualizations
         data_source = self.factory.create_data_source(group=self.factory.create_group())
-        query = self.factory.create_query(data_source=data_source, description="this is description")
+        query = self.factory.create_query(
+            data_source=data_source, description="this is description"
+        )
 
         # create default TABLE - query factory does not create it
-        self.factory.create_visualization(query_rel=query, name="Table", description="", type="TABLE", options={})
+        self.factory.create_visualization(
+            query_rel=query, name="Table", description="", type="TABLE", options={}
+        )
 
         visualization_chart = self.factory.create_visualization(
             query_rel=query,
@@ -384,7 +410,9 @@ class TestQueryFork(BaseTestCase):
                 "series": {"stacking": None},
                 "globalSeriesType": "line",
                 "sortX": True,
-                "seriesOptions": {"count": {"zIndex": 0, "index": 0, "type": "line", "yAxis": 0}},
+                "seriesOptions": {
+                    "count": {"zIndex": 0, "index": 0, "type": "line", "yAxis": 0}
+                },
                 "xAxis": {"labels": {"enabled": True}, "type": "datetime"},
                 "columnMapping": {"count": "y", "created_at": "x"},
                 "bottomMargin": 50,
@@ -411,8 +439,12 @@ class TestQueryFork(BaseTestCase):
                 count_table += 1
                 forked_table = v
 
-        self.assert_visualizations(query, visualization_chart, forked_query, forked_visualization_chart)
-        self.assert_visualizations(query, visualization_box, forked_query, forked_visualization_box)
+        self.assert_visualizations(
+            query, visualization_chart, forked_query, forked_visualization_chart
+        )
+        self.assert_visualizations(
+            query, visualization_box, forked_query, forked_visualization_box
+        )
 
         self.assertEqual(forked_query.org, query.org)
         self.assertEqual(forked_query.data_source, query.data_source)
@@ -432,10 +464,14 @@ class TestQueryFork(BaseTestCase):
     def test_fork_from_query_that_has_no_visualization(self):
         # prepare original query and visualizations
         data_source = self.factory.create_data_source(group=self.factory.create_group())
-        query = self.factory.create_query(data_source=data_source, description="this is description")
+        query = self.factory.create_query(
+            data_source=data_source, description="this is description"
+        )
 
         # create default TABLE - query factory does not create it
-        self.factory.create_visualization(query_rel=query, name="Table", description="", type="TABLE", options={})
+        self.factory.create_visualization(
+            query_rel=query, name="Table", description="", type="TABLE", options={}
+        )
 
         fork_user = self.factory.create_user()
 
@@ -514,7 +550,9 @@ class TestQueryUpdateLatestResult(BaseTestCase):
     def test_doesnt_update_queries_with_different_data_source(self):
         query1 = self.factory.create_query(query_text=self.query)
         query2 = self.factory.create_query(query_text=self.query)
-        query3 = self.factory.create_query(query_text=self.query, data_source=self.factory.create_data_source())
+        query3 = self.factory.create_query(
+            query_text=self.query, data_source=self.factory.create_data_source()
+        )
 
         query_result = QueryResult.store_result(
             self.data_source.org_id,

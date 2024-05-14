@@ -20,7 +20,11 @@ raw = {
     ]
 }
 
-raw_no_rows = {"series": [{"name": "typetest", "columns": ["time", "k1", "v1", "v2"], "values": []}]}
+raw_no_rows = {
+    "series": [
+        {"name": "typetest", "columns": ["time", "k1", "v1", "v2"], "values": []}
+    ]
+}
 
 
 def test_influxdb_result_types_with_rows():

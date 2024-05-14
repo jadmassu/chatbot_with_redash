@@ -30,17 +30,23 @@ class TestValueEvalList(TestCase):
     def test_handles_boolean(self):
         values = ["true", "false", "True", "False", "TRUE", "FALSE"]
         converted_values = [True, False, True, False, True, False]
-        self.assertEqual(converted_values, _value_eval_list(values, [TYPE_BOOLEAN] * len(values)))
+        self.assertEqual(
+            converted_values, _value_eval_list(values, [TYPE_BOOLEAN] * len(values))
+        )
 
     def test_handles_empty_values(self):
         values = ["", None]
         converted_values = [None, None]
-        self.assertEqual(converted_values, _value_eval_list(values, [TYPE_STRING, TYPE_STRING]))
+        self.assertEqual(
+            converted_values, _value_eval_list(values, [TYPE_STRING, TYPE_STRING])
+        )
 
     def test_handles_float(self):
         values = ["3.14", "-273.15"]
         converted_values = [3.14, -273.15]
-        self.assertEqual(converted_values, _value_eval_list(values, [TYPE_FLOAT, TYPE_FLOAT]))
+        self.assertEqual(
+            converted_values, _value_eval_list(values, [TYPE_FLOAT, TYPE_FLOAT])
+        )
 
     def test_handles_datetime(self):
         values = ["2018-06-28", "2020-2-29"]
@@ -48,7 +54,9 @@ class TestValueEvalList(TestCase):
             datetime.datetime(2018, 6, 28, 0, 0),
             datetime.datetime(2020, 2, 29, 0, 0),
         ]
-        self.assertEqual(converted_values, _value_eval_list(values, [TYPE_DATETIME, TYPE_DATETIME]))
+        self.assertEqual(
+            converted_values, _value_eval_list(values, [TYPE_DATETIME, TYPE_DATETIME])
+        )
 
 
 class TestParseSpreadsheet(TestCase):
@@ -63,7 +71,9 @@ class TestParseSpreadsheet(TestCase):
         spreadsheet = MagicMock()
 
         spreadsheet.get_worksheet_by_title = MagicMock(return_value=None)
-        self.assertRaises(WorksheetNotFoundByTitleError, parse_spreadsheet, spreadsheet, "a")
+        self.assertRaises(
+            WorksheetNotFoundByTitleError, parse_spreadsheet, spreadsheet, "a"
+        )
 
 
 empty_worksheet = []
@@ -199,7 +209,9 @@ class TestConnection(TestCase):
     @patch("redash.query_runner.google_spreadsheets.google.auth.default")
     def test_connect_fail_with_api_error(self, mock_auth_default):
         mock_response = MagicMock()
-        mock_response.json.return_value = {"error": {"message": "Sheet API is disabled"}}
+        mock_response.json.return_value = {
+            "error": {"message": "Sheet API is disabled"}
+        }
         mock_auth_default.side_effect = APIError(mock_response)
         qr_gspread = GoogleSpreadsheet({})
         with pytest.raises(Exception):

@@ -103,12 +103,14 @@ class DB2(BaseSQLQueryRunner):
         return list(schema.values())
 
     def _get_connection(self):
-        self.connection_string = "DATABASE={};HOSTNAME={};PORT={};PROTOCOL=TCPIP;UID={};PWD={};".format(
-            self.configuration["dbname"],
-            self.configuration["host"],
-            self.configuration["port"],
-            self.configuration["user"],
-            self.configuration["password"],
+        self.connection_string = (
+            "DATABASE={};HOSTNAME={};PORT={};PROTOCOL=TCPIP;UID={};PWD={};".format(
+                self.configuration["dbname"],
+                self.configuration["host"],
+                self.configuration["port"],
+                self.configuration["user"],
+                self.configuration["password"],
+            )
         )
         connection = ibm_db_dbi.connect(self.connection_string, "", "")
 
@@ -122,8 +124,13 @@ class DB2(BaseSQLQueryRunner):
             cursor.execute(query)
 
             if cursor.description is not None:
-                columns = self.fetch_columns([(i[0], types_map.get(i[1], None)) for i in cursor.description])
-                rows = [dict(zip((column["name"] for column in columns), row)) for row in cursor]
+                columns = self.fetch_columns(
+                    [(i[0], types_map.get(i[1], None)) for i in cursor.description]
+                )
+                rows = [
+                    dict(zip((column["name"] for column in columns), row))
+                    for row in cursor
+                ]
 
                 data = {"columns": columns, "rows": rows}
                 error = None

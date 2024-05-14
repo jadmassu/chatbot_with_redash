@@ -45,7 +45,9 @@ def parse_issue(issue, field_mapping):  # noqa: C901
                 # if field mapping with dict member mappings defined get value of each member
                 for member_name in member_names:
                     if member_name in v:
-                        result[field_mapping.get_dict_output_field_name(k, member_name)] = v[member_name]
+                        result[
+                            field_mapping.get_dict_output_field_name(k, member_name)
+                        ] = v[member_name]
 
             else:
                 # these special mapping rules are kept for backwards compatibility
@@ -70,7 +72,9 @@ def parse_issue(issue, field_mapping):  # noqa: C901
                             if member_name in listItem:
                                 listValues.append(listItem[member_name])
                     if len(listValues) > 0:
-                        result[field_mapping.get_dict_output_field_name(k, member_name)] = ",".join(listValues)
+                        result[
+                            field_mapping.get_dict_output_field_name(k, member_name)
+                        ] = ",".join(listValues)
 
             else:
                 # otherwise support list values only for non-dict items

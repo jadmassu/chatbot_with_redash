@@ -53,7 +53,14 @@ def public_widget(widget):
 def public_dashboard(dashboard):
     dashboard_dict = project(
         serialize_dashboard(dashboard, with_favorite_state=False),
-        ("name", "layout", "dashboard_filters_enabled", "updated_at", "created_at", "options"),
+        (
+            "name",
+            "layout",
+            "dashboard_filters_enabled",
+            "updated_at",
+            "created_at",
+            "options",
+        ),
     )
 
     widget_list = (
@@ -78,12 +85,21 @@ class QuerySerializer(Serializer):
     def serialize(self):
         if isinstance(self.object_or_list, models.Query):
             result = serialize_query(self.object_or_list, **self.options)
-            if self.options.get("with_favorite_state", True) and not current_user.is_api_user():
-                result["is_favorite"] = models.Favorite.is_favorite(current_user.id, self.object_or_list)
+            if (
+                self.options.get("with_favorite_state", True)
+                and not current_user.is_api_user()
+            ):
+                result["is_favorite"] = models.Favorite.is_favorite(
+                    current_user.id, self.object_or_list
+                )
         else:
-            result = [serialize_query(query, **self.options) for query in self.object_or_list]
+            result = [
+                serialize_query(query, **self.options) for query in self.object_or_list
+            ]
             if self.options.get("with_favorite_state", True):
-                favorite_ids = models.Favorite.are_favorites(current_user.id, self.object_or_list)
+                favorite_ids = models.Favorite.are_favorites(
+                    current_user.id, self.object_or_list
+                )
                 for query in result:
                     query["is_favorite"] = query["id"] in favorite_ids
 
@@ -123,7 +139,11 @@ def serialize_query(
         d["user_id"] = query.user_id
 
     if with_last_modified_by:
-        d["last_modified_by"] = query.last_modified_by.to_dict() if query.last_modified_by is not None else None
+        d["last_modified_by"] = (
+            query.last_modified_by.to_dict()
+            if query.last_modified_by is not None
+            else None
+        )
     else:
         d["last_modified_by_id"] = query.last_modified_by_id
 
@@ -136,7 +156,10 @@ def serialize_query(
             d["runtime"] = None
 
     if with_visualizations:
-        d["visualizations"] = [serialize_visualization(vis, with_query=False) for vis in query.visualizations]
+        d["visualizations"] = [
+            serialize_visualization(vis, with_query=False)
+            for vis in query.visualizations
+        ]
 
     return d
 
@@ -259,12 +282,21 @@ class DashboardSerializer(Serializer):
     def serialize(self):
         if isinstance(self.object_or_list, models.Dashboard):
             result = serialize_dashboard(self.object_or_list, **self.options)
-            if self.options.get("with_favorite_state", True) and not current_user.is_api_user():
-                result["is_favorite"] = models.Favorite.is_favorite(current_user.id, self.object_or_list)
+            if (
+                self.options.get("with_favorite_state", True)
+                and not current_user.is_api_user()
+            ):
+                result["is_favorite"] = models.Favorite.is_favorite(
+                    current_user.id, self.object_or_list
+                )
         else:
-            result = [serialize_dashboard(obj, **self.options) for obj in self.object_or_list]
+            result = [
+                serialize_dashboard(obj, **self.options) for obj in self.object_or_list
+            ]
             if self.options.get("with_favorite_state", True):
-                favorite_ids = models.Favorite.are_favorites(current_user.id, self.object_or_list)
+                favorite_ids = models.Favorite.are_favorites(
+                    current_user.id, self.object_or_list
+                )
                 for obj in result:
                     obj["is_favorite"] = obj["id"] in favorite_ids
 

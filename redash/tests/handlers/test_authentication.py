@@ -49,12 +49,16 @@ class TestInvite(BaseTestCase):
 class TestInvitePost(BaseTestCase):
     def test_empty_password(self):
         token = invite_token(self.factory.user)
-        response = self.post_request("/invite/{}".format(token), data={"password": ""}, org=self.factory.org)
+        response = self.post_request(
+            "/invite/{}".format(token), data={"password": ""}, org=self.factory.org
+        )
         self.assertEqual(response.status_code, 400)
 
     def test_invalid_password(self):
         token = invite_token(self.factory.user)
-        response = self.post_request("/invite/{}".format(token), data={"password": "1234"}, org=self.factory.org)
+        response = self.post_request(
+            "/invite/{}".format(token), data={"password": "1234"}, org=self.factory.org
+        )
         self.assertEqual(response.status_code, 400)
 
     def test_bad_token(self):
@@ -129,4 +133,6 @@ class TestLogin(BaseTestCase):
 class TestSession(BaseTestCase):
     # really simple test just to trigger this route
     def test_get(self):
-        self.make_request("get", "/default/api/session", user=self.factory.user, org=False)
+        self.make_request(
+            "get", "/default/api/session", user=self.factory.user, org=False
+        )

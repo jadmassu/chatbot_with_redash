@@ -99,7 +99,9 @@ class Tinybird(ClickHouse):
             )
         except requests.RequestException as e:
             if e.response:
-                details = f"({e.__class__.__name__}, Status Code: {e.response.status_code})"
+                details = (
+                    f"({e.__class__.__name__}, Status Code: {e.response.status_code})"
+                )
             else:
                 details = f"({e.__class__.__name__})"
             raise Exception(f"Connection error to: {url} {details}.")

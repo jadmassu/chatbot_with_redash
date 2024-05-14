@@ -39,7 +39,9 @@ class Change(GFKBase, db.Model):
     @classmethod
     def last_change(cls, obj):
         return (
-            cls.query.filter(cls.object_id == obj.id, cls.object_type == obj.__class__.__tablename__)
+            cls.query.filter(
+                cls.object_id == obj.id, cls.object_type == obj.__class__.__tablename__
+            )
             .order_by(cls.object_version.desc())
             .first()
         )

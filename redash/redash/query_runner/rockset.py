@@ -31,7 +31,10 @@ class RocksetAPI:
         self.vi_id = vi_id
 
     def _request(self, endpoint, method="GET", body=None):
-        headers = {"Authorization": "ApiKey {}".format(self.api_key), "User-Agent": "rest:redash/1.0"}
+        headers = {
+            "Authorization": "ApiKey {}".format(self.api_key),
+            "User-Agent": "rest:redash/1.0",
+        }
         url = "{}/v1/orgs/self/{}".format(self.api_server, endpoint)
 
         if method == "GET":
@@ -52,7 +55,9 @@ class RocksetAPI:
         return [x["name"] for x in response["data"]]
 
     def collection_columns(self, workspace, collection):
-        response = self.query('DESCRIBE "{}"."{}" OPTION(max_field_depth=1)'.format(workspace, collection))
+        response = self.query(
+            'DESCRIBE "{}"."{}" OPTION(max_field_depth=1)'.format(workspace, collection)
+        )
         return sorted(set([x["field"][0] for x in response["results"]]))
 
     def query(self, sql):
@@ -98,7 +103,11 @@ class Rockset(BaseSQLQueryRunner):
     def _get_tables(self, schema):
         for workspace in self.api.list_workspaces():
             for collection in self.api.list_collections(workspace):
-                table_name = collection if workspace == "commons" else "{}.{}".format(workspace, collection)
+                table_name = (
+                    collection
+                    if workspace == "commons"
+                    else "{}.{}".format(workspace, collection)
+                )
                 schema[table_name] = {
                     "name": table_name,
                     "columns": self.api.collection_columns(workspace, collection),
@@ -119,7 +128,9 @@ class Rockset(BaseSQLQueryRunner):
         if len(rows) > 0:
             columns = []
             for k in rows[0]:
-                columns.append({"name": k, "friendly_name": k, "type": _get_type(rows[0][k])})
+                columns.append(
+                    {"name": k, "friendly_name": k, "type": _get_type(rows[0][k])}
+                )
         data = {"columns": columns, "rows": rows}
         return data, None
 

@@ -27,7 +27,11 @@ def _github_request(method, path, params=None, headers={}):
 
 
 def exception_from_error(message, response):
-    return Exception("({}) {}: {}".format(response.status_code, message, response.json().get("message", "?")))
+    return Exception(
+        "({}) {}: {}".format(
+            response.status_code, message, response.json().get("message", "?")
+        )
+    )
 
 
 def rc_tag_name(version):
@@ -71,7 +75,12 @@ def upload_asset(release, filepath):
     with open(filepath) as file_content:
         headers = {"Content-Type": "application/gzip"}
         response = requests.post(
-            upload_url, file_content, params={"name": filename}, headers=headers, auth=auth, verify=False
+            upload_url,
+            file_content,
+            params={"name": filename},
+            headers=headers,
+            auth=auth,
+            verify=False,
         )
 
     if response.status_code != 201:  # not 200/201/...
@@ -120,7 +129,9 @@ def get_changelog(commit_sha):
         except Exception:
             pull_request = ""
 
-        author = subprocess.check_output(["git", "log", "-1", '--pretty=format:"%an"', parents.split(" ")[-1]])[1:-1]
+        author = subprocess.check_output(
+            ["git", "log", "-1", '--pretty=format:"%an"', parents.split(" ")[-1]]
+        )[1:-1]
 
         changes.append("{}{}: {} ({})".format(sha, pull_request, body.strip(), author))
 
@@ -132,10 +143,14 @@ def update_release_commit_sha(release, commit_sha):
         "target_commitish": commit_sha,
     }
 
-    response = _github_request("patch", "repos/{}/releases/{}".format(repo, release["id"]), params)
+    response = _github_request(
+        "patch", "repos/{}/releases/{}".format(repo, release["id"]), params
+    )
 
     if response.status_code != 200:
-        raise exception_from_error("Failed updating commit sha for existing release", response)
+        raise exception_from_error(
+            "Failed updating commit sha for existing release", response
+        )
 
     return response.json()
 

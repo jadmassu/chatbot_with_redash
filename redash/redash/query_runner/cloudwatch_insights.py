@@ -120,7 +120,9 @@ class CloudWatchInsights(BaseQueryRunner):
                 log_groups.append(
                     {
                         "name": group_name,
-                        "columns": [field["name"] for field in fields["logGroupFields"]],
+                        "columns": [
+                            field["name"] for field in fields["logGroupFields"]
+                        ],
                     }
                 )
 
@@ -139,7 +141,11 @@ class CloudWatchInsights(BaseQueryRunner):
                 data = parse_response(result)
                 break
             if result["status"] in ("Failed", "Timeout", "Unknown", "Cancelled"):
-                raise Exception("CloudWatch Insights Query Execution Status: {}".format(result["status"]))
+                raise Exception(
+                    "CloudWatch Insights Query Execution Status: {}".format(
+                        result["status"]
+                    )
+                )
             elif elapsed > TIMEOUT:
                 raise Exception("Request exceeded timeout.")
             else:

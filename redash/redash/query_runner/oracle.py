@@ -161,7 +161,12 @@ class Oracle(BaseSQLQueryRunner):
             cursor.execute(query)
             rows_count = cursor.rowcount
             if cursor.description is not None:
-                columns = self.fetch_columns([(i[0], Oracle.get_col_type(i[1], i[5])) for i in cursor.description])
+                columns = self.fetch_columns(
+                    [
+                        (i[0], Oracle.get_col_type(i[1], i[5]))
+                        for i in cursor.description
+                    ]
+                )
                 rows = [dict(zip((c["name"] for c in columns), row)) for row in cursor]
                 data = {"columns": columns, "rows": rows}
                 error = None
@@ -174,7 +179,9 @@ class Oracle(BaseSQLQueryRunner):
             (err_args,) = err.args
             line_number = query.count("\n", 0, err_args.offset) + 1
             column_number = err_args.offset - query.rfind("\n", 0, err_args.offset) - 1
-            error = "Query failed at line {}, column {}: {}".format(str(line_number), str(column_number), str(err))
+            error = "Query failed at line {}, column {}: {}".format(
+                str(line_number), str(column_number), str(err)
+            )
             data = None
         except (KeyboardInterrupt, JobTimeoutException):
             connection.cancel()

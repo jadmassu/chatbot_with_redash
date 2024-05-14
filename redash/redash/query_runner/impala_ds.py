@@ -79,10 +79,18 @@ class Impala(BaseSQLQueryRunner):
         tables_query = "show tables in `%s`;"
         columns_query = "show column stats `%s`.`%s`;"
 
-        for schema_name in [str(a["name"]) for a in self._run_query_internal(schemas_query)]:
-            for table_name in [str(a["name"]) for a in self._run_query_internal(tables_query % schema_name)]:
+        for schema_name in [
+            str(a["name"]) for a in self._run_query_internal(schemas_query)
+        ]:
+            for table_name in [
+                str(a["name"])
+                for a in self._run_query_internal(tables_query % schema_name)
+            ]:
                 columns = [
-                    str(a["Column"]) for a in self._run_query_internal(columns_query % (schema_name, table_name))
+                    str(a["Column"])
+                    for a in self._run_query_internal(
+                        columns_query % (schema_name, table_name)
+                    )
                 ]
 
                 if schema_name != "default":

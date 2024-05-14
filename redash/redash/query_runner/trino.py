@@ -130,7 +130,8 @@ class Trino(BaseQueryRunner):
     def run_query(self, query, user):
         if self.configuration.get("password"):
             auth = trino.auth.BasicAuthentication(
-                username=self.configuration.get("username"), password=self.configuration.get("password")
+                username=self.configuration.get("username"),
+                password=self.configuration.get("password"),
             )
         else:
             auth = trino.constants.DEFAULT_AUTH
@@ -150,7 +151,9 @@ class Trino(BaseQueryRunner):
             cursor.execute(query)
             results = cursor.fetchall()
             description = cursor.description
-            columns = self.fetch_columns([(c[0], TRINO_TYPES_MAPPING.get(c[1], None)) for c in description])
+            columns = self.fetch_columns(
+                [(c[0], TRINO_TYPES_MAPPING.get(c[1], None)) for c in description]
+            )
             rows = [dict(zip([c["name"] for c in columns], r)) for r in results]
             data = {"columns": columns, "rows": rows}
             error = None
@@ -158,7 +161,9 @@ class Trino(BaseQueryRunner):
             data = None
             default_message = "Unspecified DatabaseError: {0}".format(str(db))
             if isinstance(db.args[0], dict):
-                message = db.args[0].get("failureInfo", {"message", None}).get("message")
+                message = (
+                    db.args[0].get("failureInfo", {"message", None}).get("message")
+                )
             else:
                 message = None
             error = default_message if message is None else message

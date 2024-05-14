@@ -61,7 +61,9 @@ class Script(BaseQueryRunner):
 
         # Poor man's protection against running scripts from outside the scripts directory
         if self.configuration["path"].find("../") > -1:
-            raise ValueError("Scripts can only be run from the configured scripts directory")
+            raise ValueError(
+                "Scripts can only be run from the configured scripts directory"
+            )
 
     def test_connection(self):
         pass

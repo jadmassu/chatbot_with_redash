@@ -37,7 +37,9 @@ class Organization(TimestampMixin, db.Model):
 
     @property
     def default_group(self):
-        return self.groups.filter(Group.name == "default", Group.type == Group.BUILTIN_GROUP).first()
+        return self.groups.filter(
+            Group.name == "default", Group.type == Group.BUILTIN_GROUP
+        ).first()
 
     @property
     def google_apps_domains(self):
@@ -79,7 +81,9 @@ class Organization(TimestampMixin, db.Model):
 
     @property
     def admin_group(self):
-        return self.groups.filter(Group.name == "admin", Group.type == Group.BUILTIN_GROUP).first()
+        return self.groups.filter(
+            Group.name == "admin", Group.type == Group.BUILTIN_GROUP
+        ).first()
 
     def has_user(self, email):
         return self.users.filter(User.email == email).count() == 1

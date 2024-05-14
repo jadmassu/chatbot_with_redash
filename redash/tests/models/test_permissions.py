@@ -40,7 +40,9 @@ class TestAccessPermissionGrant(BaseTestCase):
 class TestAccessPermissionRevoke(BaseTestCase):
     def test_deletes_nothing_when_no_permission_exists(self):
         q = self.factory.create_query()
-        self.assertEqual(0, AccessPermission.revoke(q, self.factory.user, ACCESS_TYPE_MODIFY))
+        self.assertEqual(
+            0, AccessPermission.revoke(q, self.factory.user, ACCESS_TYPE_MODIFY)
+        )
 
     def test_deletes_permission(self):
         q = self.factory.create_query()
@@ -50,7 +52,9 @@ class TestAccessPermissionRevoke(BaseTestCase):
             grantor=self.factory.user,
             grantee=self.factory.user,
         )
-        self.assertEqual(1, AccessPermission.revoke(q, self.factory.user, ACCESS_TYPE_MODIFY))
+        self.assertEqual(
+            1, AccessPermission.revoke(q, self.factory.user, ACCESS_TYPE_MODIFY)
+        )
 
     def test_deletes_permission_for_only_given_grantee_on_given_grant_type(self):
         q = self.factory.create_query()

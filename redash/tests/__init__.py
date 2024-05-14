@@ -4,9 +4,13 @@ import os
 from contextlib import contextmanager
 from unittest import TestCase
 
-os.environ["REDASH_REDIS_URL"] = os.environ.get("REDASH_REDIS_URL", "redis://localhost:6379/0").replace("/0", "/5")
+os.environ["REDASH_REDIS_URL"] = os.environ.get(
+    "REDASH_REDIS_URL", "redis://localhost:6379/0"
+).replace("/0", "/5")
 # Use different url for RQ to avoid DB being cleaned up:
-os.environ["RQ_REDIS_URL"] = os.environ.get("REDASH_REDIS_URL", "redis://localhost:6379/0").replace("/5", "/6")
+os.environ["RQ_REDIS_URL"] = os.environ.get(
+    "REDASH_REDIS_URL", "redis://localhost:6379/0"
+).replace("/5", "/6")
 
 # Dummy values for oauth login
 os.environ["REDASH_GOOGLE_CLIENT_ID"] = "dummy"
@@ -121,7 +125,9 @@ class BaseTestCase(TestCase):
 
     def assertResponseEqual(self, expected, actual):
         for k, v in expected.items():
-            if isinstance(v, datetime.datetime) or isinstance(actual[k], datetime.datetime):
+            if isinstance(v, datetime.datetime) or isinstance(
+                actual[k], datetime.datetime
+            ):
                 continue
 
             if isinstance(v, list):

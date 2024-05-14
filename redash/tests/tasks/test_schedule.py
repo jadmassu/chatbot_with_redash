@@ -52,7 +52,9 @@ class TestSchedule(TestCase):
         def bar():
             pass
 
-        schedule_periodic_jobs([{"func": foo, "interval": 60}, {"func": bar, "interval": 90}])
+        schedule_periodic_jobs(
+            [{"func": foo, "interval": 60}, {"func": bar, "interval": 90}]
+        )
         schedule_periodic_jobs([{"func": foo, "interval": 60}])
 
         jobs = [job for job in rq_scheduler.get_jobs()]

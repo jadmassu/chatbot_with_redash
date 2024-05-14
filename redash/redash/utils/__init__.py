@@ -76,7 +76,11 @@ class JSONEncoder(json.JSONEncoder):
     def __init__(self, **kwargs):
         from redash.query_runner import query_runners
 
-        self.encoders = [r.custom_json_encoder for r in query_runners.values() if hasattr(r, "custom_json_encoder")]
+        self.encoders = [
+            r.custom_json_encoder
+            for r in query_runners.values()
+            if hasattr(r, "custom_json_encoder")
+        ]
         super().__init__(**kwargs)
 
     def default(self, o):

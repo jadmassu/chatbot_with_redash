@@ -20,12 +20,8 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column(
-        "dashboards", sa.Column("tags", ARRAY(sa.Unicode()), nullable=True)
-    )
-    op.add_column(
-        "queries", sa.Column("tags", ARRAY(sa.Unicode()), nullable=True)
-    )
+    op.add_column("dashboards", sa.Column("tags", ARRAY(sa.Unicode()), nullable=True))
+    op.add_column("queries", sa.Column("tags", ARRAY(sa.Unicode()), nullable=True))
 
 
 def downgrade():

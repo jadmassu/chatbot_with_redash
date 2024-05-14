@@ -63,7 +63,12 @@ class require_permissions:
         @functools.wraps(fn)
         def decorated(*args, **kwargs):
             if self.allow_one:
-                has_permissions = any([current_user.has_permission(permission) for permission in self.permissions])
+                has_permissions = any(
+                    [
+                        current_user.has_permission(permission)
+                        for permission in self.permissions
+                    ]
+                )
             else:
                 has_permissions = current_user.has_permissions(self.permissions)
 
@@ -92,7 +97,9 @@ def require_super_admin(fn):
 
 
 def has_permission_or_owner(permission, object_owner_id):
-    return int(object_owner_id) == current_user.id or current_user.has_permission(permission)
+    return int(object_owner_id) == current_user.id or current_user.has_permission(
+        permission
+    )
 
 
 def is_admin_or_owner(object_owner_id):
