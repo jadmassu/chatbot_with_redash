@@ -2,12 +2,14 @@ import React,{ useState} from 'react'
 import redashpng from "@/assets/images/favicon-96x96.png";
 import './chatbox.less'
 import Chat from '@/services/chat';
+import { Query } from '@/services/query';
+import QueryService from '@/services/query'
 import { IoCopy } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import copy from 'copy-to-clipboard';
-
+import Visualization from '@/services/visualization'
 
 export default function ChatBox() {
   const [input, setInput] = useState("")
@@ -37,10 +39,146 @@ export default function ChatBox() {
     const response = await Chat.openai(requestOptions);
     const data = {
       sender: "bot",
-      text: response.answer
+      text:JSON.parse(response.answer.response).query
     };
-     setChatHistory((history) => [...history, data]);
-     setInput("");
+    setChatHistory((history) => [...history, data]);
+    setInput("");
+    console.log("-------", response.answer)
+    console.log("-------", response.answer.response)
+const parsed_data = JSON.parse(response.answer.response)
+    console.log("------tt-", parsed_data)
+    console.log("------tt-",parsed_data.query )
+    
+
+  
+    const created_query = await execute_query(parsed_data.query)
+    console.log("-------", parsed_data.columns)
+
+    await visualize_query(created_query,parsed_data.columns,parsed_data.rows)
+    
+    
+  }
+
+async function execute_query(responseQuery) {
+  const queryData = {
+      data_source_id: 1,            
+      name: "My Query",   
+      query:responseQuery,
+      description: "This is a test query.",
+      options: {}
+  };
+
+
+return await Query.save(queryData)
+  .then(async savedQuery => {
+    console.log("Query saved successfully:",savedQuery.id );
+
+    const x = await savedQuery.getQueryResult()
+    console.log("Query saved successfully:", x );
+    
+    console.log("Query saved successfully:", savedQuery);
+    return savedQuery
+  })
+  .catch(error => {
+    console.error("Error saving query:", error);
+    // Handle error
+  });
+  
+  }
+
+  // select averageviewduration geography views watchtime from geography_tabledata 
+
+  async function visualize_query(query, columns, rows) {
+
+     
+    // Example dynamic configuration generation
+    const columnMapping = {};
+
+    console.log("columnMapping---", columns)
+    console.log("columnMapping---", columns[0])
+    console.log("columnMapping---",columns[1])
+    
+   const  x = columns[0]
+  const y = columns[1]
+
+
+    console.log("columnMapping",columnMapping)
+    const visualizationConfig = {
+    type: "CHART",
+    name: "Dynamic Chart",
+    description: "This chart was created dynamically based on query results",
+    options: {
+      globalSeriesType: "line",
+      sortX: true,
+      alignYAxesAtZero: false,
+      columnMapping: {
+        [x]: "x",
+        [y]: "y"
+      },
+      dateTimeFormat: "DD/MM/YY HH:mm",
+      direction: {
+        type: "counterclockwise"
+      },
+      enableLink: false,
+      error_y: {
+        type: "data",
+        visible: true
+      },
+      legend: {
+        enabled: true,
+        placement: "auto",
+        traceorder: "normal"
+      },
+      linkFormat: "",
+      linkOpenNewTab: true,
+      missingValuesAsZero: true,
+      numberFormat: "0,0[.]00000",
+      percentFormat: "0[.]00%",
+      series: {
+        stacking: null,
+        error_y: {
+          type: "data",
+          visible: true
+        }
+      },
+      seriesOptions: {},
+      showDataLabels: false,
+      sizemode: "diameter",
+      swappedAxes: false,
+      textFormat: "",
+      valuesOptions: {},
+      xAxis: {
+        type: "-",
+        labels: {
+          enabled: true
+        }
+      },
+      yAxis: [
+        {
+          type: "linear"
+        },
+        {
+          type: "linear",
+          opposite: true
+        }
+      ]
+    },
+    query_id: query.id
+  };
+
+    await Visualization.save(visualizationConfig)
+     .then(async vis => {
+    console.log("Visualization saved successfully:", vis );
+  })
+  .catch(error => {
+    console.error("Error saving Visualization:", error);
+ 
+  });
+
+  }
+  function createVisualizationConfig(queryResults) {
+   
+
   }
 
   const handleCopy = (content) => {
@@ -102,7 +240,7 @@ export default function ChatBox() {
     }
   
     return parts;
-  };
+  }; 
 
   
   return (
