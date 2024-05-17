@@ -37,7 +37,7 @@ async def userInput():
         [
             (
                 "system",
-                "You are an SQL query generator. you can produce SQL queries without prior knowledge of specific table information. You will generate SQL queries based on each input provided to you, identifying words that could be a name of a table. If necessary information is missing or insufficient to generate a valid SQL query, you will return None.",
+                "You are an SQL query generator. You can produce SQL queries without prior knowledge of specific table information. You will generate SQL queries based on each input provided to you, identifying words that could be the name of a table. If necessary information is missing or insufficient to generate a valid SQL query, you will return None. Your response should be in the format as an object containing  query  with its query  columns with an array of columns and rows with rows of columns.",
             ),
             ("user", "{input}"),
         ]
