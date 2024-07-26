@@ -58,9 +58,8 @@ cd api
 poetry run start
 ```
 
-## Frontend Development
+## Redash
 
-**Run Next Application**
 
 ```sh
 cd redash
