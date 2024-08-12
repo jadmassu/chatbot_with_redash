@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  src:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    #depends_on:
+
+    env_file:
+      - ../.env
+    #environment:
+      # Add your environment variables here
+     # DATABASE_URL: postgres://user:password@postgres/dbname

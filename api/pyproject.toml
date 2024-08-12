@@ -1,10 +1,11 @@
 [tool.poetry]
-name = "api"
+name = "src"
 version = "0.1.0"
 description = ""
 authors = ["eyerusalem <eyerusad12@gmail.com>"]
 readme = "README.md"
-packages = [{include = "api", from = "src"}]
+packages = [{include = "src"}]
+
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -19,8 +20,8 @@ langchain-openai = "^0.1.6"
 quart-cors = "^0.7.0"
 [build-system]
 requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+build-backend = "poetry.core.masonry.src"
 
 
 [tool.poetry.scripts]
-start = "api:run"
+start = "src:run"

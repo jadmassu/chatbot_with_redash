@@ -21,4 +21,4 @@ services:
       REDASH_SECRET_KEY: ${REDASH_SECRET_KEY}
       REDASH_PRODUCTION: ${REDASH_PRODUCTION:-true}
     env_file:
-      - .env
+      - ../.env
