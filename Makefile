@@ -5,14 +5,18 @@ export DOCKER_BUILDKIT=1
 export COMPOSE_PROFILES=local
 
 compose_build: .env
-	docker compose build
+	@echo "Building Docker Compose for Redash..."
+	cd redash && docker compose build
+	@echo "Building Docker Compose for API..."
+	cd api && docker-compose build
 
 up:
-	docker compose up -d redis postgres
+	cd redash &&  docker compose up -d redis postgres
 	docker compose exec -u postgres postgres psql postgres --csv \
 		-1tqc "SELECT table_name FROM information_schema.tables WHERE table_name = 'organizations'" 2> /dev/null \
 		| grep -q "organizations" || make create_database
-	docker compose up -d --build
+	cd redash && docker compose up -d --build
+	cd api && docker-compose up -d --build
 
 test_db:
 	@for i in `seq 1 5`; do \
@@ -22,19 +26,19 @@ test_db:
 	docker compose exec postgres sh -c 'psql -U postgres -c "drop database if exists tests;" && psql -U postgres -c "create database tests;"'
 
 create_db: .env
-	docker compose run server create_db
+	cd redash && docker compose run server create_db
 
 create_database: create_db
 
 clean:
-	docker compose down
-	docker compose --project-name cypress down
-	docker compose rm --stop --force
-	docker compose --project-name cypress rm --stop --force
-	docker image rm --force \
+	cd redash && docker compose down
+	cd redash && docker compose --project-name cypress down
+	cd redash && docker compose rm --stop --force
+	cd redash && docker compose --project-name cypress rm --stop --force
+	cd redash && docker image rm --force \
 		cypress-server:latest cypress-worker:latest cypress-scheduler:latest \
 		redash-server:latest redash-worker:latest redash-scheduler:latest
-	docker container prune --force
+	cd redash && docker container prune --force
 	docker image prune --force
 	docker volume prune --force
 
@@ -44,7 +48,8 @@ clean-all: clean
 		pgautoupgrade/pgautoupgrade:15-alpine3.8 pgautoupgrade/pgautoupgrade:latest
 
 down:
-	docker compose down
+	cd redash && docker compose down
+	cd api && docker-compose down
 
 .env:
 	printf "REDASH_COOKIE_SECRET=`pwgen -1s 32`\nREDASH_SECRET_KEY=`pwgen -1s 32`\n" >> .env

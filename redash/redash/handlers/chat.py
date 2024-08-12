@@ -12,6 +12,7 @@ client = OpenAI(api_key=VARIABLE_KEY)
 HOST = os.environ.get("REDASH_HOST")
 
 api_key = os.environ.get("api_key")
+backend_uri = os.environ.get("BACKEND_API_URI")
 
 
 class ChatResource(BaseResource):
@@ -19,7 +20,7 @@ class ChatResource(BaseResource):
         try:
             value = request.get_json()
             question = value.get("question")
-            response = requests.post("http://192.168.1.17:5000/getQuery", json=question)
+            response = requests.post(backend_uri + "getQuery", json=question)
             data = response.json()
             response_data = {"answer": data}
 

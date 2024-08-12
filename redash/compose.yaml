@@ -55,6 +55,7 @@ services:
       - "1025:1025"
     restart: unless-stopped
   cypress:
+
     ipc: host
     build:
       context: .
@@ -79,3 +80,4 @@ services:
       CYPRESS_PROJECT_ID: ${CYPRESS_PROJECT_ID:-""}
       CYPRESS_RECORD_KEY: ${CYPRESS_RECORD_KEY:-""}
       CYPRESS_COVERAGE: ${CYPRESS_COVERAGE:-true}
+
