@@ -14,46 +14,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build api Docker images
-        uses: docker/compose-action@v1
+      - uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-          compose-files: api/docker-compose.yml
-          build: .
-        
-      - name: Build redash Docker images
+           compose-file: "./api/docker/docker-compose.yml"
+      - name: Run docker-compose
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: "./api/docker-compose.yml"
+
+      - name: Execute tests in the running services
         run: |
-          cd redash
           docker-compose build
-
-      # - name: Run tests
-      #   run: |
-      #     docker-compose run web python -m unittest discover
-
-      - name: Push api Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          cd api
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker-compose push
-
-      - name: Push redash Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          cd redash
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker-compose push
-
-      # - name: Deploy api to Production
-      # run: |
-      #  ssh user@your-server "cd /path/to/your/backend && docker-compose pull && docker-compose up -d"
-
-      #- name: Deploy api to Production
-      #  run: |
-      #    ssh user@your-server "cd /path/to/your/frontend && docker-compose pull && docker-compose up -d"
