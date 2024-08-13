@@ -2,10 +2,10 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches:  [ "main" ]
-     
+    branches: ["main"]
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -50,8 +50,8 @@ jobs:
           docker-compose push
 
       # - name: Deploy api to Production
-       # run: |
-        #  ssh user@your-server "cd /path/to/your/backend && docker-compose pull && docker-compose up -d"
+      # run: |
+      #  ssh user@your-server "cd /path/to/your/backend && docker-compose pull && docker-compose up -d"
 
       #- name: Deploy api to Production
       #  run: |
