@@ -67,8 +67,7 @@ jobs:
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
           compose-file: "./api/docker-compose.yml"
+          run:  docker-compose build
+          
 
-      - name: Execute tests in the running services
-        run: |
-          cd api
-          docker-compose build
+     
