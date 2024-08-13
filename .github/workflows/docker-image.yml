@@ -70,4 +70,5 @@ jobs:
 
       - name: Execute tests in the running services
         run: |
+          cd api
           docker-compose build
