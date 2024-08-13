@@ -18,10 +18,11 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Build api Docker images
-        run: |
-          cd api
-          docker-compose build
-
+        uses: docker/compose-action@v1
+        with:
+          compose-files: api/docker-compose.yml
+          build: .
+        
       - name: Build redash Docker images
         run: |
           cd redash
