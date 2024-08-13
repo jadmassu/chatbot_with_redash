@@ -16,7 +16,7 @@ jobs:
 
       - uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-           compose-file: "./api/docker/docker-compose.yml"
+           compose-file: "./api/docker-compose.yml"
       - name: Run docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
