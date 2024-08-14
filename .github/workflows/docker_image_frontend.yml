@@ -24,6 +24,8 @@ jobs:
         run: |
           touch .env
           echo BACKEND_API_URI=${{ secrets.BACKEND_API_URI }} >> .env
+          echo REDASH_COOKIE_SECRET=${{ secrets.REDASH_COOKIE_SECRET }} >> .env
+          echo REDASH_SECRET_KEY=${{ secrets.REDASH_SECRET_KEY }} >> .env
 
       - name: Run docker-compose
         env:
