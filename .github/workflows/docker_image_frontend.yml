@@ -26,8 +26,7 @@ jobs:
           echo BACKEND_API_URI=${{ secrets.BACKEND_API_URI }} >> .env
           echo REDASH_COOKIE_SECRET=${{ secrets.REDASH_COOKIE_SECRET }} >> .env
           echo REDASH_SECRET_KEY=${{ secrets.REDASH_SECRET_KEY }} >> .env
-          echo PWD=${{ secrets.PWD }} >> .env
-
+         
       - name: Run docker-compose
         env:
             DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
