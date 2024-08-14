@@ -1,4 +1,4 @@
-# Precision RAG: Prompt Tuning For Building Enterprise RAG Systems
+# Redash chat add-on
 
 ## Table of Contents
 
