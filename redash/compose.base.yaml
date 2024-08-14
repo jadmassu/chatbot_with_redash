@@ -5,8 +5,8 @@ services:
       args:
         FRONTEND_BUILD_MODE: ${FRONTEND_BUILD_MODE:-2}
         INSTALL_GROUPS: ${INSTALL_GROUPS:-main,all_ds,dev}
-    volumes:
-      - $PWD:${SERVER_MOUNT:-/ignore}
+    # volumes:
+    #   - $PWD:${SERVER_MOUNT:-/ignore}
     command: manage version
     environment:
       REDASH_LOG_LEVEL: INFO
@@ -21,4 +21,4 @@ services:
       REDASH_SECRET_KEY: ${REDASH_SECRET_KEY}
       REDASH_PRODUCTION: ${REDASH_PRODUCTION:-true}
     env_file:
-      - ../.env
+      - ./.env
