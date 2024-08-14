@@ -1,9 +1,10 @@
 name: Docker Compose Action Fror The Frontend
 
 on:
-  push:
-    paths:
-      - "redash/**"
+  push: 
+    branches: [main]
+    # paths:
+    #   - "redash/**"
 
 jobs:
   build:
