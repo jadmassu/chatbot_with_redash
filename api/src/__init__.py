@@ -29,7 +29,6 @@ def run() -> None:
 @app.post("/getQuery")
 async def userInput():
     userInput = await request.get_json()
-    print("ttttttttttttttt", userInput)
 
     # message = userInput.get("question")
     print("mesaf", userInput)
