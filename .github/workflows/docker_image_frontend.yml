@@ -47,12 +47,12 @@
 #       #  run: |
 #       #    ssh user@your-server "cd /path/to/your/frontend && docker-compose pull && docker-compose up -d"
 
-name: Docker Compose Action
+name: Docker Compose Action Fror The Frontend
 
 on:
   push:
     paths:
-      - "api/**"
+      - "redash/**"
 
 jobs:
   build:
@@ -64,10 +64,10 @@ jobs:
       - name: "Create env file"
         run: |
           touch .env
-          echo API_KEY=${{ secrets.OPENAI_API_KEY }} >> .env
+          echo BACKEND_API_URI=${{ secrets.BACKEND_API_URI }} >> .env
 
       - name: Run docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-          compose-file: "./api/docker-compose.yml"
-          run: docker-compose build
+          compose-file: "./redash/compose.yml"
+          run: docker compose build
