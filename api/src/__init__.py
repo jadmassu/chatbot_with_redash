@@ -31,7 +31,7 @@ async def userInput():
     userInput = await request.get_json()
 
     # message = userInput.get("question")
-    print("mesaf", userInput)
+
     prompt = ChatPromptTemplate.from_messages(
         [
             (
