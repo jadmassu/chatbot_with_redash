@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: eyerusad/chatboat_backend:latest
     ports:
       - "5000:5000"
     #depends_on:
