@@ -73,16 +73,17 @@ jobs:
           echo API_KEY=${{ secrets.OPENAI_API_KEY }} >> .env
 
       - name: Run docker-compose
+        env:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
           compose-file: "./api/docker-compose.yml"
-          run: docker-compose build
+          run: |
+            docker-compose build
+            cd api
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+            docker-compose push
 
-      - name: Push api Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
-        run: |
-          cd api
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker-compose push
+
+      
