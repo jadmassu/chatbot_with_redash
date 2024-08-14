@@ -30,7 +30,7 @@ jobs:
             DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-          compose-file: "./redash/compose.yml"
+          compose-file: "./redash/compose.yaml"
           run: |
             docker compose build
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
